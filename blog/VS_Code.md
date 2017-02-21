@@ -23,14 +23,19 @@ Learing Visual Studio Code
 ## 多终端管理
 添加终端的快捷键 **`Ctrl+Shift+` `**
 
-# [Debugging]
+# [Debugging](https://code.visualstudio.com/docs/editor/debugging)
 VS Code一个关键功能就是对于debugging的支持，VS Code内嵌的调试器debugger能够让你高效的进行编码，编译和调试的过程。
 
 ![调试器界面](https://code.visualstudio.com/images/debugging_debugging_hero.png "调试器界面")
 
 VS Code包含一个内嵌的debugger，它支持Node.js运行时，且可以调试JavaScript、TypeScript、以及其他可以编译成Javascript的语言。
 
-对于调试其他语言和运行时（包括PHP、Ruby、Go、C#、Python等）请在[市场]中寻找[debugger扩展]。
+对于调试其他语言和运行时（包括PHP、Ruby、Go、C#、Python等）请在[市场](https://marketplace.visualstudio.com/search?target=vscode&category=Debuggers&sortBy=Downloads)中寻找[debugger扩展](https://code.visualstudio.com/docs/editor/extension-gallery)。
+
+>*注：以下的介绍是基于内嵌的Node.js调试器（debugger），但是大部分的概念和功能同样适用于其他语言的debugger。*
+
+>*如果是对于Node.js不是非常熟悉，在debugging之前，遵循[Node.js 演示](\blog\Learning_JavaScript)安装Node.js并创建一个`hello word`的程序（`app.js`）。一旦你已经拥有一个简单的js程序，以下的步骤想带你了解 `VS Code` debugging的功能*
+
 
 在VS Code边栏上点击debugging的图标就可以展开debug窗口
 ![debug view](https://code.visualstudio.com/images/debugging_debugicon.png) 
@@ -39,11 +44,6 @@ debug窗口中包含了所有有关debugging的信息，它在debugging命令和
 
 如果只是简单的debug一个程序，在VS Code中只需要按 **`F5`**
 
-[Debugging]: https://code.visualstudio.com/docs/editor/debugging
-
-[市场]: https://marketplace.visualstudio.com/search?target=vscode&category=Debuggers&sortBy=Downloads
-
-[debugger扩展]: https://code.visualstudio.com/docs/editor/extension-gallery
 # [Transact-SQL]
 ## 安装T-SQL支持
 通过安装mssql扩展包来使VS Code支持T-SQL，通过VS Code应用市场安装步骤如下：

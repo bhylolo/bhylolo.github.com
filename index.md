@@ -1,8 +1,13 @@
 # Welcome to Rowan Bao's Homepage
 
 ### [Learning Markdown](\blog\Learning_Markdown)
-### [Learning Visual Studio Code](\blog\VS_Code.md)
-### [Learning JavaScript](\blog\Learning_JavaScript.md)
-### [Learing DotNet](\blog\Learning_DotNet.md)
+>介绍Markdown的语法
 
-[homepage]: 
+### [Learning Visual Studio Code](\blog\VS_Code)
+>了解如何使用Visual Studio Code 
+
+### [Learning JavaScript](\blog\Learning_JavaScript)
+>JavaScript语法学习
+
+### [Learing DotNet](\blog\Learning_DotNet)
+>Dot Net知识学习
