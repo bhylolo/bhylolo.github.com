@@ -9,5 +9,10 @@
 ### [Learning JavaScript](\blog\Learning_JavaScript)
 >JavaScript语法学习
 
-### [Learing DotNet](\blog\Learning_DotNet)
+### [Learning DotNet](\blog\Learning_DotNet)
 >Dot Net知识学习
+
+### [Learning Emacs](\blog\Learning_Emacs)
+
+### *TO DO*
+*搜索相关技术，自然语言处理，语义分析，深度学习*
