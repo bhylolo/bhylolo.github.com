@@ -16,7 +16,7 @@
 |number|v=123|
 |boolean|v=true <br> v=false|
 |object|v=null <br>v={...}<br>|
-|function||
+|function|v= function(){...}|函数的声明
 |
 
 <h1 id="nodejs"></h1>
