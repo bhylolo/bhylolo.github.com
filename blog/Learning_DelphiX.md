@@ -65,18 +65,17 @@ Delphi编译器只会编译从以下三种文件中编译源码：
 * 资源文件(.res后缀的文件) 
 * 工程选项文件(.dof后缀的文件) 
 
-一个VCL 窗体文件中包含了所对应的窗体`form`或控件`component`的属性值。每一个窗体文件都对应一个窗体（可能是windows窗体或者是对话框）。通常，由于文本
-A VCL form file contains the description of the properties of the form and the components it owns. Each form file represents a single form, which usually corresponds to a window or dialog box in an application. The IDE allows you to view and edit form files as text, and to save form files as either text (a format very suitable for version control) or binary. Although the default behavior is to save form files as text, they are usually not edited manually; it is more common to use Embarcadero's visual design tools for this purpose. Each project has at least one form, and each form has an associated unit (.pas) file that, by default, has the same name as the form file. 
+一个VCL 窗体文件中包含了所对应的窗体`form`或控件`component`的属性值。每一个窗体文件都对应一个窗体（windows窗体或者dialog）。IDE以文本格式加载和编辑窗体文件，再保存成文本格式或二进制（通常文本格式更利于版本控制）。尽管dfm（窗体文件）是存成文本格式，但是一般不需要文件进行直接修改，而是使用IDE的可视化设计器来操作。每一个Application工程都至少含有一个form（窗体），每一个form都对应一个pas文件，pas文件同dfm文件同名，只是后缀不同。
 
-In addition to VCL form files, each project uses a resource (.res) file to hold the application's icon and other resources such as strings. By default, this file has the same name as the project (.dpr) file. 
+除了VCL form文件，每一个工程都有一个资源文件（.res）来存储application的icon，以及其他资源，例如字符串等。默认情况，这些资源文件的名称同工程文件（.dpr）同名。
 
-A project options (.dof) file contains compiler and linker settings, search path information, version information, and so forth. Each project has an associated project options file with the same name as the project (.dpr) file. Usually, the options in this file are set from Project Options dialog. 
+工程选项文件（.dof）中间保存了编译和链接的设置、搜索路径、版本信息等等。每一个工程文件（.dpr）都关联一个同名的.dof文件。通常，选项文件（.dof）的内容是通过Project Option（工程选项）来设置的。
 
-Various tools in the IDE store data in files of other types. Desktop settings (.dsk) files contain information about the arrangement of windows and other configuration options; desktop settings can be project-specific or environment-wide. These files have no direct effect on compilation. 
+IDE中其他各种工具也会将设置存成其他后缀的文件，例如桌面设置（Desktop setting）存成.dsk，里面保存了IDE窗体设置等一些信息，桌面设置可以是由当前打开的工程来指定，也可以采用IDE关键设置。但这些设置文件都不会影响到程序的编译。
 
-**Compiler-Generated Files**
+**同编译器相关联的文件**
 
-The first time you build an application or a package, the compiler produces a compiled unit file (.dcu on Win32) for each new unit used in your project; all the .dcu files in your project are then linked to create a single executable or shared package. The first time you build a package, the compiler produces a file for each new unit contained in the package, and then creates both a .dcp and a package file. If you use the GD compiler switch, the linker generates a map file and a .drc file; the .drc file, which contains string resources, can be compiled into a resource file. 
+当第一次编译一个application（程序）或者package（包）时，工程中每一个新.pas文件（新创建或修改过的pas文件），编译器都会生成一个对应的.dcu文件，所有的.dcu文件随后会被链接创建成一个exe可执行文件或一个package。在编译package时，编译器一样会对package中每一个新.pas文件编译生成对应的.dcu文件，同时还会针对package生成.dcp和package包文件。如果打开GD编译开关的话，连接器还会生成map文件和.dcr文件（.dcr文件中包含了字符串资源，这些资源可以被编译进一个资源文件）
 
 When you build a project, individual units are not recompiled unless their source (.pas) files have changed since the last compilation, their .dcu/.dpu files cannot be found, you explicitly tell the compiler to reprocess them, or the interface of the unit depends on another unit which has been changed. In fact, it is not necessary for a unit's source file to be present at all, as long as the compiler can find the compiled unit file and that unit has no dependencies on other units that have changed. 
 

@@ -34,7 +34,7 @@ VS Code包含一个内嵌的debugger，它支持Node.js运行时，且可以调�
 
 >*注：以下的介绍是基于内嵌的Node.js调试器（debugger），但是大部分的概念和功能同样适用于其他语言的debugger。*
 
->*如果是对于Node.js不是非常熟悉，在debugging之前，遵循[Node.js 演示](\blog\Learning_JavaScript)安装Node.js并创建一个`hello word`的程序（`app.js`）。一旦你已经拥有一个简单的js程序，以下的步骤想带你了解 `VS Code` debugging的功能*
+>*如果是对于Node.js不是非常熟悉，在debugging之前，遵循[Node.js 演示](.\Learning_JavaScript)安装Node.js并创建一个`hello word`的程序（`app.js`）。一旦你已经拥有一个简单的js程序，以下的步骤想带你了解 `VS Code` debugging的功能*
 
 
 在VS Code边栏上点击debugging的图标就可以展开debug窗口

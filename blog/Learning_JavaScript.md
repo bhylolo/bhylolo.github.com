@@ -59,3 +59,31 @@
 
 # [Node.js](https://code.visualstudio.com/docs/runtimes/nodejs)
 [Node.js](https://nodejs.org/en/)是一个平台，它让JavaScript的程序更快、更有扩展性的运行在服务器端。Node.js是一个运行时环境(`runtime`)，它使用[NPM](https://www.npmjs.com/)来管理Node.js的模块。
+
+VS Code 支持Javascript、TypeScript和Node.js debugging 开箱即用。然而，运行Node.js的程序，需要安装Node.js运行时环境。
+
+在开始下面的向导之前，先需要下载[Node.js](https://nodejs.org/en/download/), Node Package Manager已经包含在安装包中间了。
+
+### Hello World
+---
+按照以下向导，来创建一个简单的Node.js程序。
+1. 创建一个`hello`的空文件夹
+2. 使用VS Code打开此目录
+
+    mkdir hello
+    cd hello
+    code .
+
+>注意：'.'表示当前目录
+
+在VS Code的文件浏览工具栏中，点击新建文件按钮
+![](https://code.visualstudio.com/images/nodejs_toolbar-new-file.png)
+然后，新建一个文件，命名为`app.js`
+![](https://code.visualstudio.com/images/nodejs_app-js-file-created.png)
+通过使用`js`文件扩展名，VS Code能够识别该文件是一个JavaScript的源码文件，并链接Javascript语言服务解析代码。
+
+在`app.js`中，创建一个字符串变量，然后将字符串打印在终端。
+
+    var msg= 'Hello World';
+    console.log(msg);
+
