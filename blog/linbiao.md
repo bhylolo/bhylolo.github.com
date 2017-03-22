@@ -8,4 +8,4 @@
 ### 按
 
 ## 1955年授衔
-![林彪元帅照](.\linbiaoimages\林彪元帅照.png)
+![林彪元帅照](\linbiaoimages\林彪元帅照.png)
