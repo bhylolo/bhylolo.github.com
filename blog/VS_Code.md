@@ -60,3 +60,12 @@ debug窗口中包含了所有有关debugging的信息，它在debugging命令和
 3. 执行的结果会在一个新的视窗（view）中以文本的形式显示。
 
 [Transact-SQL]: https://code.visualstudio.com/docs/languages/tsql
+
+# Keyboard Shortcuts for Windows
+## Markdown Supporting
+|Functions|Shortcuts|Remark|
+|--|--|--|
+|切换到Markdown预览|Ctrl+Shift+V||
+|从侧栏打开Markdown预览|Ctrl+K V||
+||||
+
