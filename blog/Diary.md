@@ -1,3 +1,9 @@
+# 2017年6月2日：我喜欢的设计
+也算是回应一下冯大辉的[生活里那些糟糕的设计](https://mp.weixin.qq.com/s?__biz=MjM5ODIyMTE0MA==&mid=2650969593&idx=1&sn=44e6922b655e16bc6512d17a30f1a333&chksm=bd3831c28a4fb8d4978204ea85f5d23bb26793625658479043ed8cf1f248106cbdf6bd9dbc25&mpshare=1&scene=1&srcid=0602thMvgVwY0oTdi3fSKZBw&key=e2d576b70311fc59d69298a7c2cd5b76c91382bfb6546c4f7a5e17eb81d9518055d342de717f600ac40c0fc505b87fceb821a44dc84a713005c641ada939a2d1786b0aa17a0d8f52caa0c54dacdf5545&ascene=0&uin=MTE5Nzk3&devicetype=iMac+MacBookPro8%2C1+OSX+OSX+10.12.4+build(16E195)&version=12020610&nettype=WIFI&fontScale=100&pass_ticket=5OI9yBaHm6iCmMjbjTOh4aGWEnytu0TPAexUVmDevSA%3D)。
+
+
+
+
 # 2017年6月1日：人工智能
 也许是我看的新闻还不够多，但至少从热门的微信公众号和[马云、马化腾的演讲](https://mp.weixin.qq.com/s?__biz=MjM5ODIzNTc2MA==&mid=2660761988&idx=1&sn=f09faddaad79edc1127ab33b2170be7b&chksm=bda17a9b8ad6f38d8816ccfb234a3c69c00ca9edac378d958966b262de32c9cfd7e5855d6f01&mpshare=1&scene=1&srcid=0601AwU9u2t4sR2WODqcBnsu&key=ffcd72666a7af29b9e7c5397ab2f65e69147eee014b406b7ba38d0ca0c213650292cb13d18d958c417a50b9deee6d4d2441559fc489d93580e3ca356c923ff95b0f892ffb4757ddf563f5654cb10b20b&ascene=0&uin=MTE5Nzk3&devicetype=iMac+MacBookPro8%2C1+OSX+OSX+10.12.4+build(16E195)&version=12020610&nettype=WIFI&fontScale=100&pass_ticket=ZCbLY0DcTqzI9QDuuaxQNb7MdSRW2NDD7tIdEtRMesc%3D)来看，现在国内讨论AI的文章、演讲都挺招人烦的。
 
@@ -44,7 +50,7 @@
 * `分答`只在新闻中看见过
 >分答我没有下载，因为我问不出什么问题，或者我想问的问题，别人未必肯回答。
 * `得到`只在罗辑思维中听到过
->其实，我举得罗振宇（对的，不是[罗振玉](http://baike.baidu.com/link?url=1ghZf6T9Ms6k9AgqLhpqJ43EGuCfSJk5VLm2WFaeKw0vfyF-HTc9Gos2lyN7EQFRSxoFRxnopwOTOklZz9-UcXLuZfqdhAjjVElPHxwWRGEeJ54BcENQpq5uWZpWfpG-)）做`得到`，就是一位两年读了七百本书的猛人，还要请人给自己的产品撑门面，这本身就有点荒谬。
+>其实，我觉得罗振宇（对的，不是[罗振玉](http://baike.baidu.com/link?url=1ghZf6T9Ms6k9AgqLhpqJ43EGuCfSJk5VLm2WFaeKw0vfyF-HTc9Gos2lyN7EQFRSxoFRxnopwOTOklZz9-UcXLuZfqdhAjjVElPHxwWRGEeJ54BcENQpq5uWZpWfpG-)）做`得到`，就是一位两年读了七百本书的猛人，还要请别人给自己的产品撑门面，这本身就有点荒谬。
 * `小秘圈`加入了一个圈子，支付了￥50
 >这是我唯一付了钱的产品，我是从冯大辉的[小道消息](http://mp.weixin.qq.com/s/M_cs-U5ukP7PDBczKcFY9A)知道这个App的，冯大辉的文字让我讨厌，但是[飞总](http://mp.weixin.qq.com/s/CIBgpaqvRdqw7pKQCotckQ)写的文章，真的是CS PhD才能写得出的。之所以把这二位放在一起品味，是因为他们二位都号称是搞数据库的。笔杆子和嘴皮子毕竟是有区别的，所以￥50给了飞总。
 
@@ -67,7 +73,7 @@
 
 # 引子
 不得不说用`Markdown`写文章是一件很舒服的事情，更棒的是Github不但极为方便的存储、多人协助、发布markdown文档，而且`VS Code、Atom`集成的很好。
-* 我是看池建强的[博客](https://mp.weixin.qq.com/s?__biz=MjM5ODQ2MDIyMA==&mid=2650712337&idx=1&sn=3ffe5fe12f2d0d59bcb72bee4a4d5b01&mpshare=1&scene=1&srcid=0601hZcYisPAQATwtg0b5nvK&key=c5a673ba6130fcd9b98a5aa1e88424849786204b43630450f8f7423724530b331fc5702b8ee125779fb0b32ea249749a636d9639cc78af8fbc5dabb34aad435f0ed4975080ef633ea2a239c56ce73031&ascene=0&uin=MTE5Nzk3&devicetype=iMac+MacBookPro8%2C1+OSX+OSX+10.12.4+build(16E195)&version=12020610&nettype=WIFI&fontScale=100&pass_ticket=5dClz1oZlG6NbxuQ%2FCqkalvMgA%2FOPhifEk6hOWqZlpA%3D)才知道有Markdown的，但是我体会完后觉得，这个还不是`沉浸式写作`的问题，关键是，对于纸质媒介，为了更清晰的表达文字背后的意思，需要使用各种标点符号、排版格式，在平面上传达过多的意思，但是对于电子媒介，可选择的表现方式还有：颜色、字体样式、链接等，而且这些相比较原来的标点符号，更加利于表现，也更加适合内容之间的关联表示。
+* 我是看池建强的[博客](https://mp.weixin.qq.com/s?__biz=MjM5ODQ2MDIyMA==&mid=2650712337&idx=1&sn=3ffe5fe12f2d0d59bcb72bee4a4d5b01&mpshare=1&scene=1&srcid=0601hZcYisPAQATwtg0b5nvK&key=c5a673ba6130fcd9b98a5aa1e88424849786204b43630450f8f7423724530b331fc5702b8ee125779fb0b32ea249749a636d9639cc78af8fbc5dabb34aad435f0ed4975080ef633ea2a239c56ce73031&ascene=0&uin=MTE5Nzk3&devicetype=iMac+MacBookPro8%2C1+OSX+OSX+10.12.4+build(16E195)&version=12020610&nettype=WIFI&fontScale=100&pass_ticket=5dClz1oZlG6NbxuQ%2FCqkalvMgA%2FOPhifEk6hOWqZlpA%3D)才知道有Markdown的。Markdown很符合物联网表现形式。对于纸质媒介，为了更清晰的表达文字背后的意思，需要使用各种标点符号、排版格式，以期在平面上传达更多的内容，但是对于电子媒介，可选择的表现方式还有：颜色、字体样式、链接（尤其是超链接，才是完爆纸媒的特性啊，更符合人类学习知识体系的思维方式）等，而且这些相比较原来的标点符号，更加利于表现，也更加适合内容之间的关联表示。
 * Markdown是洋人发明的，适合英文写作，中文写作还是有点别扭。主要是以下：
     * 中文的标点符号与Markdown语法符号冲突。对于在中文输入法下键入Markdown的语法符号，仍然是中文字符，不能变成英文字符（这个我还没有在搜狗、微软拼音、苹果中文下找到解决方法）
     * 对于k`括号[]{}()`使用英文的符号，而且输入以后光标能自动跳转到括号中间（貌似，这个应该是编辑器支持的功能），虽然按方向键可以解决，但任何打字人，都会有感受，一旦进入状态后，都不希望手离开主键盘区，连按方向键都是打断思路。

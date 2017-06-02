@@ -5,19 +5,16 @@
 [VS Code]
 --
 ## 预览Markdown
->VS Code对于Markdown支持“开箱即用”。你是需要打开就能立即撰写Markdown文档，然后保存成 .md后缀的文件，同时你还可以在可视化文本编辑和Markdown预览之间来回切换。显然，你也可以打开一个已有的Markdown文件然后编辑。在编辑器中切换试图的快捷键是：Ctrl+Shift+V。你也可以在编辑Markdown文件的同时预览其效果，切换到“编辑-预览”的分栏格式，使用快捷键：Ctrl+K V。
+>VS Code对于Markdown支持“开箱即用”。你是需要打开就能立即撰写Markdown文档，然后保存成 .md后缀的文件，同时你还可以在可视化文本编辑和Markdown预览之间来回切换。显然，你也可以打开一个已有的Markdown文件然后编辑。在编辑器中切换试图的快捷键是：Ctrl+Shift+V。你也可以在编辑Markdown文件的同时预览其效果，切换到“编辑-预览”的分栏格式，使用快捷键：Ctrl+K V(`中文输入法会先于命令模式拦截按键事件，所以，这个需要切换到英文输入法才行。蛋疼！`)。
 
 [VS Code]: https://code.visualstudio.com/docs/languages/markdown
 
-Markdown
-==
+# [Markdown](https://en.wikipedia.org/wiki/Markdown)
 [Markdown] 是针对web写作的一种“文本->HTML”的转换工具。Markdown允许你用一种方便读写的文本格式来撰写文档，然后将文档转换成为一个有效的XHTNL/HTML的格式。
 
 因此，“Markdown”包含两方面，
 1. 一个简单文本格式的语法
 2. 一个工具，使用Perl写的，它将一个简单文本格式的文档转换成为HTML。
-
-参考Markdown语法细则，你现在就可以在线尝试一下。
 
 对于Markdown重新设计的目标是，使其尽可能的容易阅读。主要的设计思想是，对于一个markdown格式的文档，它应该是一个纯文本的文档，看上去不应该充满格式结构和标签。虽然markdown的设计收到很多已有的“文本->HTML”过滤器的影响，但是给markdown语法带来最大灵感的是email的文本编辑格式。
 
