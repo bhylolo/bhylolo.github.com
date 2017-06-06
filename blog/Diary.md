@@ -1,3 +1,11 @@
+# 2017年6月6日：再谈设计
+今天，又听见一位同事在谈创新和设计，并不是很认可，主要意见如下：
+- 创新≠闷头想，创新需要在充分了解历史、了解问题本质的基础上，小步前进。
+> 让我想起在`The Devil wears Prada`中
+- 创新时要保持克制，真正颠覆性的设计是小概率的，能在原来基础上进步30%就很好
+- 创新最困难的是：如何在Geek的效率和foolish上手之间做好平衡。
+> 好比Emacs／Vim和WPS之间的区别
+
 # 2017年6月2日：我喜欢的设计
 也算是回应一下冯大辉的[生活里那些糟糕的设计](https://mp.weixin.qq.com/s?__biz=MjM5ODIyMTE0MA==&mid=2650969593&idx=1&sn=44e6922b655e16bc6512d17a30f1a333&chksm=bd3831c28a4fb8d4978204ea85f5d23bb26793625658479043ed8cf1f248106cbdf6bd9dbc25&mpshare=1&scene=1&srcid=0602thMvgVwY0oTdi3fSKZBw&key=e2d576b70311fc59d69298a7c2cd5b76c91382bfb6546c4f7a5e17eb81d9518055d342de717f600ac40c0fc505b87fceb821a44dc84a713005c641ada939a2d1786b0aa17a0d8f52caa0c54dacdf5545&ascene=0&uin=MTE5Nzk3&devicetype=iMac+MacBookPro8%2C1+OSX+OSX+10.12.4+build(16E195)&version=12020610&nettype=WIFI&fontScale=100&pass_ticket=5OI9yBaHm6iCmMjbjTOh4aGWEnytu0TPAexUVmDevSA%3D)。
 * **品味**我觉得自己在品味和审美方面感觉很迟钝，要是我来做这方面，估计要让人抓狂了——比如，给美女拍照。所以，如果我要在淘宝上卖钥匙包，我会相信女人的审美，遵从付钱的大爷，只要买的多，钱给的多，我管他什么恶趣呢。
