@@ -75,17 +75,23 @@ IDE中其他各种工具也会将设置存成其他后缀的文件，例如桌�
 
 **同编译器相关联的文件**
 
-当第一次编译一个application（程序）或者package（包）时，工程中每一个新.pas文件（新创建或修改过的pas文件），编译器都会生成一个对应的.dcu文件，所有的.dcu文件随后会被链接创建成一个exe可执行文件或一个package。在编译package时，编译器一样会对package中每一个新.pas文件编译生成对应的.dcu文件，同时还会针对package生成.dcp和package包文件。如果打开GD编译开关的话，连接器还会生成map文件和.dcr文件（.dcr文件中包含了字符串资源，这些资源可以被编译进一个资源文件）
+当第一次编译一个application（程序）或者package（包）时，工程中每一个新.pas文件（新创建或修改过的pas文件），编译器都会生成一个对应的.dcu文件，所有的.dcu文件随后会被链接创建成一个exe可执行文件或一个package。在编译package时，编译器一样会对package中每一个新.pas文件编译生成对应的.dcu文件，同时还会针对package生成.dcp和package包文件。如果打开GD编译开关的话，连接器还会生成map文件和.dcr文件（.dcr文件中包含了字符串资源，这些资源可以被编译进一个资源文件）。
 
-When you build a project, individual units are not recompiled unless their source (.pas) files have changed since the last compilation, their .dcu/.dpu files cannot be found, you explicitly tell the compiler to reprocess them, or the interface of the unit depends on another unit which has been changed. In fact, it is not necessary for a unit's source file to be present at all, as long as the compiler can find the compiled unit file and that unit has no dependencies on other units that have changed. 
+当一个工程在被编译的时候，只有在以下情况，各个单元文件才会被编重新译，否则不会再次编译单元文件：
+- 在最后一次编译后，单元文件被修改过。
+- 单元文件对应的.dcu/dpu文件不存在
+- 你明确告知编译器需要重新编译工程
+- 单元所依赖的外部接口、单元发生改变。
 
-#### Example Programs
+事实上，以上并不是判断一个单元是否需要被重新编译的必要条件，对于编译器来说，只要发现一个已经编译过的单元，它所依赖的单元都没有发生变化，则就不会重新编译该单元。
 
-The examples that follow illustrate basic features of Delphi programming. The examples show simple applications that would not normally be compiled from the IDE; you can compile them from the command line. 
+#### 程序（Program）示例
 
-**A Simple Console Application**
+以下的栗例子将展示Delphi程序的一些基本功能。这些简单的示例，通常不是使用IDE编译的，而是使用命令行编译的。
 
-The program below is a simple console application that you can compile and run from the command prompt: 
+**一个简单的控制台程序（Console Application）**
+
+下面这个是一个简单的控制台程序（console application）你可以在命令行中编译、执行。 
 
     program Greeting;
     
@@ -99,13 +105,13 @@ The program below is a simple console application that you can compile and run f
       Writeln(MyMessage);
     end.
 
-The first line declares a program called Greeting. The {$APPTYPE CONSOLE} directive tells the compiler that this is a console application, to be run from the command line. The next line declares a variable called MyMessage, which holds a string. (Delphi has genuine string data types.) The program then assigns the string "Hello world!" to the variable MyMessage, and sends the contents of MyMessage to the standard output using the Writeln procedure. (Writeln is defined implicitly in the System unit, which the compiler automatically includes in every application.) 
+第一行声明了这个程序名字叫Greeting。随后，编译指令{$APPTYPE CONSOLE}告诉编译器，这是一个控制台程序，是在命令行中运行的。再往下，是声明一个变量叫MyMessage，它是string类型（Delphi的string类型的数据是被自动管理的）。后面的语句是将字符串"Hello world!"赋值给变量MyMessage，将MyMessage变量 的内容发送给标准输出函数Writeln。（Writeln函数被定义在System单元中，由编译器自动包含到每一个单元的引用之中。）
 
-You can type this program into a file called `greeting.pas` or `greeting.dpr` and compile it by entering: 
+你可以将整段代码写到文件中，文件命名为`greeting.pas`或者`greeting.dpr`，然后使用以下的命令编译这个文件： 
 
 `dcc32 greeting` 
 
-to produce a Win32 executable. 
+编译成功后，即产生一个Win32的可执行文件。
 
 The resulting executable prints the message `Hello world!` 
 
