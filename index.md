@@ -2,6 +2,7 @@
 
 |文章|说明|
 |--|--|
+|[Agile](\blog\Agile)|敏捷软件开发
 |[Diary](\blog\Diary)|随笔日记
 |[VS_Code](\blog\VS_Code)|VS Code 使用说明
 |[Learning Delphi X](\blog\Learning_DelphiX)|学习Delphi
