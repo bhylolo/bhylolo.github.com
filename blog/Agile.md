@@ -132,16 +132,17 @@ Pair Programming 结对编程模式：
 由产品经理（product owner）发布、管理，将产品所有可能的需求都包含在其中，并排列好优先级。对于开发团队，PB是唯一的需求入口，PO在制作PB的时候只需要有效的支持开发，不需要支持维护。
 
 - 它是一个列表，罗列出所有项目中希望要做的工作，里面包含：
- - Features
- - Bugs
- - Technical work
- - Knowledge acquisition知识获得，例如培训资料
- - Technical debt 技术债
+  - Features
+  - Bugs
+  - Technical work
+  - Knowledge acquisition知识获得，例如培训资料
+  - Technical debt 技术债
 - 里面所有的项目都应有优先级
 - 由product owner 来确定、调整其优先级
 - 对于开发团队，PB是唯一的需求入口，PO在制作PB的时候只需要有效的支持开发
 - 列出的所有工作应该是high-level的，详细的内容会在后面添加
  > 细化到什么程度just enough， 什么时机细化just in time
+
 - PB应当方便从文档转换成其他形式，以便于讨论。
 
 <h5 id= "sb">冲刺任务列表 Sprint backlog</h5>
@@ -164,51 +165,52 @@ Pair Programming 结对编程模式：
 #### 活动
 - 需求列表梳理 *Product backlog grooming* ：一般是在迭代的第二周开展的，根据目前的状况，为项目下一个迭代做准备。
 - 冲刺计划（Sprint planning）
- - 每一个Sprint时长一般为2周，最短不少于1周，最长不超过4周
- - 任务来自于需求池PB
- - 确定哪些UserStory（功能）将在接下来的迭代中做
- - 是由用户告知的，希望系统应该如何工作的
- - 通常是卡片形式，并有估算和注释
- - 是工程师和PO、业务人员讨论后的结果
- - 验收标准
- - 细化粒度，确保是能在一周内完成
+  - 每一个Sprint时长一般为2周，最短不少于1周，最长不超过4周
+  - 任务来自于需求池PB
+  - 确定哪些UserStory（功能）将在接下来的迭代中做
+  - 是由用户告知的，希望系统应该如何工作的
+  - 通常是卡片形式，并有估算和注释
+  - 是工程师和PO、业务人员讨论后的结果
+  - 验收标准
+  - 细化粒度，确保是能在一周内完成
 
- ![sp](https://upload.wikimedia.org/wikipedia/commons/5/58/Scrum_process.svg)
+  ![sp](https://upload.wikimedia.org/wikipedia/commons/5/58/Scrum_process.svg)
 
 - 站立会议 *Daily scrum*
- - 时长：每日早上 5~15分钟
- - 与会人员：Team中全体成员
- - 内容
- - 回顾昨天工作完成情况
- - 简单描述今天工作内容
- - 遇到哪些问题、困难
- - 要点
- - Team Leader了解项目、团队实际情况
- - 发现异常问题
- - 如有异常问题等，不在例会上讨论，而是结束后和特定人专门讨论
+  - 时长：每日早上 5~15分钟
+  - 与会人员：Team中全体成员
+  - 内容
+  - 回顾昨天工作完成情况
+  - 简单描述今天工作内容
+  - 遇到哪些问题、困难
+  - 要点
+  - Team Leader了解项目、团队实际情况
+  - 发现异常问题
+  - 如有异常问题等，不在例会上讨论，而是结束后和特定人专门讨论
 
- ![daily scrum](https://upload.wikimedia.org/wikipedia/commons/4/4a/Daily_sprint_meeting.jpg)
+  ![daily scrum](https://upload.wikimedia.org/wikipedia/commons/4/4a/Daily_sprint_meeting.jpg)
 
 - 阶段工作内容展示 *Sprint review* ：每次sprint结束后，用来演示sprint达成的目标，完成的功能，听取用户反馈
- - 时机：每次Sprint结束之后
- - 参与者：Team、PO、Scrum Master
- - 内容：Sprint计划中承诺的内容
- - 成果：一个可用的产品，包含新功能的
+  - 时机：每次Sprint结束之后
+  - 参与者：Team、PO、Scrum Master
+  - 内容：Sprint计划中承诺的内容
+  - 成果：一个可用的产品，包含新功能的
 
  > 标准定义
  > - 可用 不等于 可发布
  > - 最低标准是：通过单元测试
  > - 最高标准是：通过全部测试
  > - 采用何种标准，由团队决定
+ 
 - 回顾 *Retrospective* ：每次sprint结束之后，由团队内部人员参加的，反思这次sprint中哪些环节做的比较好，哪些环节做的不够
- - 时机：Sprint review之后
- - 参与者：Team
- - 内容
- - 回顾本次Sprint中的优缺点
- - 评估团队开发效率，为下次估算做基础
- - 发现问题
- - 评估产品风险
- - 评估技术债
+  - 时机：Sprint review之后
+  - 参与者：Team
+  - 内容
+  - 回顾本次Sprint中的优缺点
+  - 评估团队开发效率，为下次估算做基础
+  - 发现问题
+  - 评估产品风险
+  - 评估技术债
 
 <h3 id="practice">最佳实践</h3>
   
@@ -265,6 +267,7 @@ Pair Programming 结对编程模式：
 
 ####  如何设计好产品功能
 > *找到痛点最有效的方式是，看它能够用最简洁语言描述出来*
+
 - Elevator statement 电梯测试：在电梯到达一楼之前，向对方说明产品特点。在2分钟内向客户解释产品，用简短的语言描述产品的优势
   - 为谁
   - 产品给客户带来的价值
