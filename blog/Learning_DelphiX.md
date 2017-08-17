@@ -318,12 +318,12 @@ When the `greeting` program starts, `Form1` is displayed and `Form2` is invisibl
 
     function Divide(X, Y: Real): Real; overload;
     begin
-    Result := X/Y;
+        Result := X/Y;
     end
     
     function Divide(X, Y: Integer): Integer; overload;
     begin
-    Result := X div Y;
+       Result := X div Y;
     end;
 
 **前向声明**
@@ -362,17 +362,17 @@ When the `greeting` program starts, `Form1` is displayed and `Form2` is invisibl
 
     procedure DoSomething(S: string);
     var
-    X, Y: Integer;
+        X, Y: Integer;
     
     procedure NestedProc(S: string);
     begin
-    ...
+      ...
     end;
     
     begin
-    ...
-    NestedProc(S);
-    ...
+        ...
+        NestedProc(S);
+        ...
     end;
 
 ---
@@ -388,21 +388,21 @@ When the `greeting` program starts, `Form1` is displayed and `Form2` is invisibl
 
     procedure UpdateRecords;
     begin
-    ...
+        ...
     end;
 
 **参数的传值和传递引用** *Value and Variable Parameters* 
 
     function DoubleByValue(X: Integer): Integer;   // X is a value parameter
     begin
-    X := X * 2;
-    Result := X;
+        X := X * 2;
+        Result := X;
     end;
     
     function DoubleByRef(var X: Integer): Integer;  // X is a variable parameter
     begin
-    X := X * 2;
-    Result := X;
+        X := X * 2;
+        Result := X;
     end;
 
 **Const**
