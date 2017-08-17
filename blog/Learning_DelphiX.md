@@ -1,5 +1,5 @@
 # Learning Delphi X
-## Delphi语法
+<h2 id="context">Delphi语法</h2>
 
 * [语言概述](#language )
 * [程序和单元](#units)
@@ -18,7 +18,7 @@
 
 <h3 id="language" />
 
-### 语言概述
+### [语言概述](#context)
 ----
 Delphi是一种编译型、强类型的高级语言。Delphi支持结构化和面向对象程序设计。语法基于Object Pascal，这是一种代码容易阅读，编译更块，支持多文件模块化编程的语言。
 
@@ -272,7 +272,60 @@ When the `greeting` program starts, `Form1` is displayed and `Form2` is invisibl
 
 <h3 id="procedure" />
 
-### 过程和函数
+### [过程和函数](#context)
+---
+#### 函数的声明
+函数,在Delphi相关的文档中,英文的表述为function\procedure\routine,除了一些微小的区别,基本上表述的都是 **函数**
+- function: 指有返回值的函数,声明形式为 **function FunName(Param:Type): Type;**
+- procedure: 指没有返回值的函数,声明形式为 **procedure FunName(Param: Type);** 
+- routine: 是对function和procedure的统称
+
+声明示例
+
+    function Max(A: array of Real): Real;
+    var
+        X: Real;
+        I: Integer;
+    begin
+        if Length(A)=0 then
+            Exit(0); //Exit忽略之后一直到end之间所有的函数代码,跳出当前函数,函数的返回值为()中间的数值
+        X := A[0];
+        for I := Low(A) to High(A) do
+            if X < A[I] then X := A[I];
+        Result:= X; //函数的返回值也可以表示成 Max := X;
+    end;
+
+    procedure NumString(N: Integer; var S: string);
+    var
+       V: Integer;
+     begin
+       V := Abs(N);
+       S := '';
+       repeat
+         S := Chr(V mod 10 + Ord('0')) + S;
+         V := V div 10;
+       until V = 0;
+       if N < 0 then S := '-' + S;
+     end;
+
+当声明的函数需要作为DLL的输出函数,或者COM等接口函数供外部程序集(有可能时跨语言)调用,一般需要明确指定函数的调用规则*Calling Convention*,声明示例:
+
+    function MyFunction(X, Y: Real): Real; cdecl;
+
+在Delphi中Calling Convention的类型如下:
+
+|声明|参数调用顺序|参数清理者|是否使用CPU寄存器|
+|--|--|--|--|
+|register  |Undefined  |Routine  | Yes 
+|pascal |Undefined |Routine |No 
+|cdecl |Right-to-left |Caller |No 
+|stdcall |Right-to-left |Routine |No 
+|safecall |Right-to-left |Routine |No 
+ 
+---
+#### 函数的参数
+#### 函数的调用
+#### 匿名函数
 
 <h3 id="class" />
 
