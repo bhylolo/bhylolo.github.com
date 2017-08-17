@@ -280,7 +280,7 @@ When the `greeting` program starts, `Form1` is displayed and `Form2` is invisibl
 - procedure: 指没有返回值的函数,声明形式为 **procedure FunName(Param: Type);** 
 - routine: 是对function和procedure的统称
 
-声明示例
+**声明示例**
 
     function Max(A: array of Real): Real;
     var
@@ -308,28 +308,353 @@ When the `greeting` program starts, `Form1` is displayed and `Form2` is invisibl
        if N < 0 then S := '-' + S;
      end;
 
+**重载overload**
+
+    ... ... 
+    procedure Store(X: Longint); overload;    
+    procedure Store(X: Shortint); overload;    
+
+    implementation
+
+    function Divide(X, Y: Real): Real; overload;
+    begin
+    Result := X/Y;
+    end
+    
+    function Divide(X, Y: Integer): Integer; overload;
+    begin
+    Result := X div Y;
+    end;
+
+**前向声明**
+
+    function Calculate(X, Y: Integer): Real; forward;
+
 当声明的函数需要作为DLL的输出函数,或者COM等接口函数供外部程序集(有可能时跨语言)调用,一般需要明确指定函数的调用规则*Calling Convention*,声明示例:
 
     function MyFunction(X, Y: Real): Real; cdecl;
 
-在Delphi中Calling Convention的类型如下:
+**调用规则**, 在Delphi中Calling Convention的类型如下:
 
-|声明|参数调用顺序|参数清理者|是否使用CPU寄存器|
-|--|--|--|--|
-|register  |Undefined  |Routine  | Yes 
-|pascal |Undefined |Routine |No 
-|cdecl |Right-to-left |Caller |No 
+|声明|参数调用顺序|参数清理者|用寄存器传参|说明|
+|--|--|--|--|--|
+|register  |Undefined  |Routine  | Yes |使用CPU寄存器传参,除此之外,其他的调用规则都是直接在stack上传递参数|
+|pascal |Undefined |Routine |No |
+|cdecl |Right-to-left |Caller |No |参数调用顺序等同于C语言的顺序,如果作为DLL输出函数,需要被C语言调用的话,则在Delphi中声明的函数需要使用 cdel或stdcall. 但不同于其他规则,只有cdel规则是调用者caller负责在stack删除参数,其他规则,都是函数自身负责删除参数.通常,推荐使用stdcall,相对来说效率会好于cdel
 |stdcall |Right-to-left |Routine |No 
-|safecall |Right-to-left |Routine |No 
+|safecall |Right-to-left |Routine |No |该调用规则需要实现exception firewall异常防火墙.在Win32平台上,是由COM error notification来实现的.
  
+ **外部函数**
+
+ 如果函数的实现部分不在当前的程序域中,则函数的声明部分需要用指示字注明
+ - 当需要调用的函数是在单独的object file中间,需要使用编译指示字注明链接 object file
+
+        {$L BLOCK.OBJ}
+        procedure MoveWord(var Source, Dest; Count: Integer); external;
+
+- 如果函是外部DLL中间的函数的话,则还需要注明DLL名称和在DLL中的函数名
+
+        function MessageBox(HWnd: Integer; Text, Caption: PChar; Flags: Integer): Integer;stdcall; external 'user32.dll' name 'MessageBoxA';
+
+        // 也可以使用序号index来替代DLL中输出函数的名称,例如: external stringConstant index integerConstant;
+
+**内嵌函数声明:**
+
+    procedure DoSomething(S: string);
+    var
+    X, Y: Integer;
+    
+    procedure NestedProc(S: string);
+    begin
+    ...
+    end;
+    
+    begin
+    ...
+    NestedProc(S);
+    ...
+    end;
+
 ---
 #### 函数的参数
-#### 函数的调用
-#### 匿名函数
+函数的参数声明位置在函数名之后,参数的形式举例如下:
+
+    (X, Y: Real)
+    (var S: string; X: Integer)
+    (HWnd: Integer; Text, Caption: PChar; Flags: Integer)
+    (const P; I: Integer)
+
+如果函数没有参数的话,则可以没有(),例如
+
+    procedure UpdateRecords;
+    begin
+    ...
+    end;
+
+**参数的传值和传递引用** *Value and Variable Parameters* 
+
+    function DoubleByValue(X: Integer): Integer;   // X is a value parameter
+    begin
+    X := X * 2;
+    Result := X;
+    end;
+    
+    function DoubleByRef(var X: Integer): Integer;  // X is a variable parameter
+    begin
+    X := X * 2;
+    Result := X;
+    end;
+
+**Const**
+
+声明为const是read-only的参数,且是传递应用的,类似**var**
+
+    function CompareStr(const S1, S2: string): Integer;
+
+**Out**
+
+out也是传递引用,但与var不同的是,out只是为了传出而用的,所以不要在传给函数之前,在外部对于out参数做任何赋值或初始化,因为它会被函数内部初始化.
+
+    procedure GetInfo(out Info: SomeRecordType);
+
+**Untyped**
+
+当函数参数指示为var/const/out 时,可以不指定具体的类型,在函数内部访问该参数的时候,可以强制转换为特定类型使用,或者转换为variant类型使用.
+
+    procedure TakeAnything1(const C);
+    procedure TakeAnything2(var C);
+    procedure TakeAnything3(out C);
+
+**Array / Open Array**
+
+定长数组参数的声明
+
+    type TDigits = array[1..10] of Integer;
+    procedure Sort(A: TDigits);
+
+*不能声明成这样:*
+
+    procedure Sort(A: array[1..10] of Integer)  // syntax error
+
+Open Array 开放数组(不定长)的声明
+
+    function Find(A: array of Char): Integer;
+
+也可以是这样声明
+
+    type
+        TDynamicArray = array of Integer;
+        procedure p(Value: TDynamicArray);
+
+开放数组的调用 
+
+    procedure PrintArray(A: array of Real);
+    var
+        I: Integer;
+    begin
+        for I := 0 to High(A) do 
+            Writeln(A[I]);
+    end;
+
+    var
+        LArr: array [0..3] of Real;
+    begin
+        LArr[0]:= 0;
+        LArr[1]:= 1;
+        LArr[2]:= 2;
+        PrintArray(LArr);
+
+        PrintArray([1.1., 2.2. ,3.3, 4.4]);
+    end.
+
+Variant 开放数组
+
+    function MakeStr(const Args: array of const): string;
+    var
+        I: Integer;
+    begin
+        Result := '';
+        for I := 0 to High(Args) do
+            with Args[I] do
+                case VType of
+                vtInteger:  Result := Result + IntToStr(VInteger);
+                vtBoolean:  Result := Result + BoolToStr(VBoolean);
+                vtChar:     Result := Result + VChar;
+                vtExtended: Result := Result + FloatToStr(VExtended^);
+                vtString:   Result := Result + VString^;
+                vtPChar:    Result := Result + VPChar;
+                vtObject:   Result := Result + VObject.ClassName;
+                vtClass:    Result := Result + VClass.ClassName;
+                vtAnsiString:  Result := Result + string(VAnsiString);
+                vtUnicodeString:  Result := Result + string(VUnicodeString);
+                vtCurrency:    Result := Result + CurrToStr(VCurrency^);
+                vtVariant:     Result := Result + string(VVariant^);
+                vtInt64:       Result := Result + IntToStr(VInt64^);
+            end;
+    end;    s
+
+    begin   
+        MakeStr(['test', 100, ' ', True, 3.14159, TForm]);
+    end.
+                                                                                     
+**参数的默认值**
+
+    function Add(X: Real = 3.5; Y: Real = 3.5): Real;
+    begin
+        result:= X+Y;
+    end;
+
+    begin
+        writeln(Add());
+        writeln(Add(1, 2));
+    end.
+
+---
+#### 函数类型
+
+函数也可以作为一种类型来声明,这样就可以指定一个变量的类型为函数类型.注意体会以下区别:
+
+*声明函数*
+
+    function Add(X, Y: real): real;    
+
+    implementation
+
+    function Add(X, Y: real):real;
+    begin
+        result:= X + Y;
+    end;
+
+*声明函数类型*
+
+    type
+        TFun = function (X, Y: real): real; // 普通函数
+        TObjFun = function (X, Y: real): real of object; // 类函数
+        TAnFun = reference to function (X, Y: real): real; //匿名函数
+
+*普通函数类型的使用*
+
+    function Add(X, Y: real): real;
+    begin   
+        result:= X+Y;
+    end;
+
+    procedure CalAdd();
+    var
+        LFun: TFun;
+    begin   
+        LFun:= @Add;
+        writeln(LFun(1,2));
+    end;
+
+    procedure Cal(AFun: TFun);
+    begin
+        writeln(AFun(1, 2));
+    end;
+
+    begin
+        CalAdd();
+        Cal(@Add);
+    end.
+
+*类函数的使用*
+
+    type
+        TObjFun = function(X, Y: Real): Real of object;
+
+    TMathOpr = class(TObject)
+    public
+        function Add(X, Y: Real): Real;
+        function Sub(X, Y: Real): Real;
+        function Multi(X, Y: Real): Real;
+        function Division(X, Y: Real): Real;
+        function Opr(AFun: TObjFun; X, Y: Real): Real;
+    end;
+
+    { TMathOpr }
+
+    function TMathOpr.Add(X, Y: Real): Real;
+    begin
+        Result := X + Y;
+    end;
+
+    function TMathOpr.Division(X, Y: Real): Real;
+    begin
+        Result := X / Y;
+    end;
+
+    function TMathOpr.Multi(X, Y: Real): Real;
+    begin
+        Result := X * Y;
+    end;
+
+    function TMathOpr.Sub(X, Y: Real): Real;
+    begin
+        Result := X - Y;
+    end;
+
+    function TMathOpr.Opr(AFun: TObjFun; X, Y: Real): Real;
+    begin
+        Result := AFun(X, Y);
+    end;
+
+    var
+        LMath: TMathOpr;
+    begin
+        LMath:= TMathOpr.Create;
+        try
+            with LMath do
+            begin
+                writeln(Opr(Add, 1,2));
+                writeln(Opr(Sub, 1,2));
+                writeln(Opr(Multi, 1,2));
+                writeln(Opr(Division, 1,2));
+            end;
+        finally
+            LMath.Free;
+        end;
+    end.
+
+*匿名函数*
+
+    type
+        TFuncOfIntToString = reference to function(x: Integer): string;
+
+        procedure AnalyzeFunction(proc: TFuncOfIntToString);
+        begin
+            { some code }
+        end;
+
+    function MakeAdder(y: Integer): TFuncOfIntToString;
+    begin
+        Result := 
+            function(x: Integer): string
+            begin
+                Result := IntToStr(x+y);
+            end;
+    end;
+
+
+    var
+        myFunc: TFuncOfIntToString;
+    begin
+        myFunc:= MakeAdder(2);
+        AnalyzeFunction(myFunc);
+
+    
+        AnalyzeFunction(
+                function(x: Integer): string
+                begin
+                    Result := IntToStr(x);
+                end;
+        );
+    end;
+
+---
 
 <h3 id="class" />
 
-### 类和对象
+[类和对象](#context)
 
 <h3 id="routine" />
 
