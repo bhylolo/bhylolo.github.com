@@ -87,7 +87,7 @@ IDE中其他各种工具也会将设置存成其他后缀的文件，例如桌�
 
 #### 程序（Program）示例
 
-以下的栗例子将展示Delphi程序的一些基本功能。这些简单的示例，通常不是使用IDE编译的，而是使用命令行编译的。
+以下的例子将展示Delphi程序的一些基本功能。这些简单的示例，通常不是使用IDE编译的，而是使用命令行编译的。
 
 **一个简单的控制台程序（Console Application）**
 
@@ -111,9 +111,7 @@ IDE中其他各种工具也会将设置存成其他后缀的文件，例如桌�
 
 `dcc32 greeting` 
 
-编译成功后，即产生一个Win32的可执行文件。
-
-The resulting executable prints the message `Hello world!` 
+编译成功后，即产生一个Win32的可执行程序，该程序的执行结果是打印一条消息“Hello World！”
 
 Aside from its simplicity, this example differs in several important ways from programs that you are likely to write with Embarcadero development tools. First, it is a console application. Embarcadero development tools are most often used to write applications with graphical interfaces; hence, you would not ordinarily call Writeln. Moreover, the entire example program (save for Writeln) is in a single file. In a typical GUI application, the program heading the first line of the example would be placed in a separate project file that would not contain any of the actual application logic, other than a few calls to routines defined in unit files. 
 
