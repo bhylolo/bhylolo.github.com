@@ -1,0 +1,38 @@
+unit uCIndex;
+
+interface
+
+uses
+  Classes, System.Generics.Collections;
+
+type
+  TCIndex = class(TObject)
+  public type
+    TIdent = class(TComponent)
+    private
+      FFollows: TObjectList<TIdent>;
+
+    public
+      procedure AfterConstruction; override;
+      procedure BeforeDestruction; override;
+      property Follows: TObjectList<TIdent> read FFollows;
+    end;
+  end;
+
+implementation
+
+{ TCIndex.TIdent }
+
+procedure TCIndex.TIdent.AfterConstruction;
+begin
+  inherited;
+
+end;
+
+procedure TCIndex.TIdent.BeforeDestruction;
+begin
+  inherited;
+
+end;
+
+end.

@@ -1,0 +1,14 @@
+unit uCIndex;
+
+interface
+
+uses
+  Classes;
+
+type
+  TCharacter = class(TObject)
+
+  end;
+implementation
+
+end.

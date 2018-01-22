@@ -337,7 +337,9 @@ Adding a name for the thread adds a call of the TThread class method NameThreadF
 
 Execute是线程方法，你可以将它认为是你主程序启动的一个程序，所不同的，线程会共享你当前的进程空间。撰写线程方法会比写一个程序（program）稍微复杂一点，因为你必须关心线程不会复写（overwrite）主程序的共享内存区域。另一方面，由于线程会在主程序中同其它线程共享内存，你可以使用共享内存来传递信息。
 
-# Seven Concurrency Modules in Seven Weeks *[Am] Paul Buther*
+# 七周七并发模型 
+Seven Concurrency Modules in Seven Weeks *[Am] Paul Bu
+ther*
 
 - [概述](#summary)
 - [线程和锁](#ThreadLock)
@@ -358,6 +360,8 @@ Execute是线程方法，你可以将它认为是你主程序启动的一个程�
 ### 并行架构
 - bit-level 位级并行
 - instruction-leve 指令级并行
+- 数据级并行
+- 任务级并行
 
 <h2 id="ThreadLock">线程和锁</h2>
 <h2 id="FunctionalProgram">函数式编程</h2>
