@@ -1,5 +1,7 @@
 # 敏捷软件开发
-**敏捷软件开发** *Agile software Development* 是一种软件开发方法，基于迭代和增量开发，通过自组织,跨团队，沟通协作完成开发工作。
+**敏捷软件开发** 
+
+*Agile software Development* 是一种软件开发方法，基于迭代和增量开发，通过自组织,跨团队，沟通协作完成开发工作。
 
 > 2001年2月11日到13日，17位软件开发领域的领军人物聚集在美国犹他州的滑雪胜地鸟（Snowbird）雪场。经过两天的讨论，“敏捷”（Agile）这个词为全体聚会者所接受，用以概括一套全新的软件开发价值观。这套价值观，通过一份简明扼要的《敏捷宣言》，传递给世界，宣告了敏捷开发运动的开始。
 
@@ -24,12 +26,14 @@
 11. 最佳的架构、需求和设计出自于自组织的团队（self-organizing teams）
 12. 团队要定期反省如何能够做到更有效，并相应地调整团队的行为
 
-### 敏捷实践
+<h3 id="practice"> 敏捷实践</h3>
+
 - [Pair Programming 结对编程](#pp)
 - [TDD测试驱动开发](#tdd)
 - [KanBan看板](#kanban)
 - [XP极限编程](#xp)
 - [Scrum](#scrum)
+- [Trouble Shooting](#issue)
 
 ---
 
@@ -295,4 +299,21 @@ Pair Programming 结对编程模式：
 <h2 id="ref">引用</h2>
 以上所有图片资源，来自Wikipedia。
 
+---
+<h2 id="issue">Trouble Shooting</h2>
 
+### **Agile** 不只是 **Scrum**
+敏捷包含多种[实践](#practice)，其中Scrum受到软件开发的关注是由于，Scrum所针对的团队规模一般不超过10人，此规模的团队不至于太小而做不出产品级成果，也不至于太大而占用更多的资源，从而有更高的风险。
+
+但更小或更大的团队规模，也不一定完全适合Scrum。
+- 更小的团队，由于沟通成本更低，可以选择更自由更适合自身的放式，而不必拘泥于Scrum的某些形式。
+- 更大规模的团队，尤其是面对并不能持续集成、持续发布的产品，也不需要强求Scrum。
+
+### Scrum的重要资产
+- Product Backlog 重点在于
+  1. 这是一份与外部成员沟通的结果，也是Team安排计划和计算成果的依据，同时也是产品需分析的结果。
+  2. 当需要在某一层面了解系统的概况（既要比User Story具体，又要比系统设计抽象），这是一份很好的依据。
+  3. 为Team在Sprint中提供了需求缓冲。
+  4. 对于理想的Scrum模型，sprint backlog来自于product backlog，而product backlog是来自于customer、product owner和team leader共同制定的，两方的相互制约，使得product backlog会趋向于功能和成本的合理。
+- Sprint Backlog
+- Burn down Chart
