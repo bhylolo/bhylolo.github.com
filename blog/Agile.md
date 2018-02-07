@@ -312,8 +312,25 @@ Pair Programming 结对编程模式：
 ### Scrum的重要资产
 - Product Backlog 重点在于
   1. 这是一份与外部成员沟通的结果，也是Team安排计划和计算成果的依据，同时也是产品需分析的结果。
-  2. 当需要在某一层面了解系统的概况（既要比User Story具体，又要比系统设计抽象），这是一份很好的依据。
+  2. 当需要在某一层面了解系统的概况（既要比User Story具体，又要比系统设计抽象），这是一份很好的需求和设计说明书。
   3. 为Team在Sprint中提供了需求缓冲。
   4. 对于理想的Scrum模型，sprint backlog来自于product backlog，而product backlog是来自于customer、product owner和team leader共同制定的，两方的相互制约，使得product backlog会趋向于功能和成本的合理。
 - Sprint Backlog
 - Burn down Chart
+
+### Scrum重要角色
+1. Srcum Master
+2. Product Owner
+
+### Scrum的商务和财务意义
+1. 将Customer纳入到Scrum中，明确需求，是保证最后product具有正确的功能和有商业价值
+2. Scrum团队可以作为财务成本核算单元，帮助企业在财务层面监控研发成本
+  - 对于直接产生商业合同的Scrum项目，更容易核算成本和计算利润
+  - 对于不直接产生商业合同的项目，或维护类项目，可以根据product backlog核算工作量，通过每个burn down chart估算团队开发效率
+3. 对于固定价格的合同，Scrum会面临很大的挑战。能在早期规划项目、评估风险是决定成败的关键。所以，做方案的能力尤为重要，所谓制作方案的能力，是指，能够识别核心需求（对于用户具有商业价值的功能）、了解如何搭建一套成熟可用的系统、哪些子系统可以有成熟的商业产品可替代、成本是多少。
+
+### Scrum 面临的挑战
+1. 并不是所有的项目都有customer，如何保证“做正确的事”
+2. 选择合适的Scrum Master，确保其能够所服务的各个Team之间，协调资源，解决冲突
+3. 对于遗留系统的维护，PO最大的挑战是，对于遗留系统的认知，不仅包括业务上、还包括技术上和历史债务
+
