@@ -3,6 +3,7 @@
 |文章|说明|
 |--|--|
 |[Learning Delphi X](\blog\Learning_DelphiX)|学习Delphi
+|[Understanding Delphi](\blog\UnderstandDelphi)|了解Delphi的一些特性
 |[Learning OOP](\blog\Learning_OOP)|学习面向对象编程|
 |[Learning OOP](\blog\Startup_Company)|创业|
 |[Agile](\blog\Agile)|敏捷软件开发
