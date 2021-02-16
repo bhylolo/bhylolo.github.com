@@ -1,0 +1,10 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TFrameObjectTree','FORMDATA',[
+  'TPF0'#16'TFrameObjectTree'#15'FrameObjectTree'#4'Left'#2#0#6'Height'#3#240#0
+  +#3'Top'#2#0#5'Width'#3'@'#1#12'ClientHeight'#3#240#0#11'ClientWidth'#3'@'#1#8
+  +'TabOrder'#2#0#10'DesignLeft'#3#184#1#9'DesignTop'#3#129#0#0#18'TVirtualStri'
+  +'ngTree'#5'VTree'#4'Left'#2#0#6'Height'#3#240#0#3'Top'#2#0#5'Width'#3'@'#1#5
+  +'Align'#7#8'alClient'#11'DefaultText'#6#4'Node'#20'Header.AutoSizeIndex'#2#0
+  +#14'Header.Columns'#14#0#17'Header.MainColumn'#2#255#8'TabOrder'#2#0#0#0#0
+]);

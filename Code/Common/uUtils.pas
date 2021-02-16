@@ -1,0 +1,824 @@
+unit uUtils;
+
+interface
+
+uses
+  System.Classes, System.SysUtils, System.RTTI, System.TypInfo, System.Types,
+  System.AnsiStrings, System.json;
+
+type
+  TTextLine = reference to procedure(I: Integer; const S: string);
+  TGetStr = reference to procedure(const S: string);
+  TReadStr = function(): string of object;
+  TGetAnsiStr = reference to procedure(const S: AnsiString);
+  TAnsiStringDynArray = array of AnsiString;
+
+  TNexus = class(TComponent)
+  private
+    FOnFreeNotify: TProc<TComponent>;
+  protected
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+  public
+    property OnFreeNotify: TProc<TComponent> read FOnFreeNotify
+      write FOnFreeNotify;
+  end;
+
+  TReaderEx = class(TReader)
+  public
+    property PropName;
+    procedure ReadProperty(AInstance: TPersistent);
+  end;
+
+  TParamAttribute = class(TCustomAttribute)
+  private
+    FParamName: string;
+    FHelp: string;
+  public
+    constructor Create(const AParamName, AHelp: string);
+    property ParamName: string read FParamName write FParamName;
+    property Help: string read FHelp write FHelp;
+  end;
+
+procedure IterateComponent(AComponent: TComponent; AGetter: TProc<TComponent>;
+  ARecursive: Boolean);
+procedure IterateObjects(AHost: TObject; AGetter: TProc<TObject>); overload;
+procedure IterateObjects(AHost, ARoot: TObject;
+  AGetter: TProc<TObject>); overload;
+procedure IterateProps(AHost: TObject; ATypeKinds: TTypeKinds;
+  AGetter: TProc<PPropInfo>);
+procedure IterateMethods(AClass: TClass; AGetter: TProc<TRttiMethod>);
+
+function CopyComponent(ASource, ASourceRoot, ATargetRoot,
+  ATargetParent: TComponent): TComponent;
+procedure CopyPersistent(ASource, ATarget: TPersistent);
+
+procedure StreamAccessor(W: TProc<TWriter>; R: TProc<TReader>);
+procedure SaveToDFM(ASetter: TProc<TStream>; AStream: TStream;
+  AFmt: TStreamOriginalFormat = sofText); overload;
+procedure SaveToDFM(ASetter: TProc<TStream>; AFileName: string;
+  AFmt: TStreamOriginalFormat = sofText); overload;
+procedure SaveToDFM(AComponent: TComponent; AFileName: string;
+  AFmt: TStreamOriginalFormat = sofText); overload;
+procedure LoadFromDFM(ASetter: TProc<TStream>; AStream: TStream); overload;
+procedure LoadFromDFM(ASetter: TProc<TStream>; AFileName: string); overload;
+
+procedure SplitColumn(const ALine: string; AGetter: TTextLine;
+  const ASpliter: Char = ',');
+function FindSubStr(const AStr: string; AValues: array of string;
+  AUnmatched, AMatched: TGetStr): Boolean;
+procedure FindSubAnsiStr(const AStr: AnsiString; AValues: array of AnsiString;
+  AUnmatched, AMatched: TGetAnsiStr);
+function SplitAnsiString(const S: AnsiString; const Delimiters: AnsiChar)
+  : TAnsiStringDynArray;
+
+function UniqName(AExisting: TPredicate<string>; const APrefix: string;
+  const AFmt: string = '%s%d'): string;
+
+function CompliantName(const AName: string): string;
+
+function Char8DateToDate(AChar8Date: Integer): TDate;
+
+function GetJsonValue(AJsonObject: TJSONValue; const AKeyPath: array of string;
+  AValueClass: TClass; AGetter: TProc<TJSONValue>): Boolean;
+function ForeachJsonArray(AJsonObject: TJSONValue;
+  const AKeyPath: array of string; AGetter: TProc<TJSONValue>): Boolean;
+
+procedure ClassFinder(AGetter: TProc<TPersistentClass>);
+
+implementation
+
+type
+  TCopyUtility = class(TObject)
+  private
+    FTarget, FTargetRoot: TComponent;
+    procedure OnAncestorNotFound(Reader: TReader; const ComponentName: string;
+      ComponentClass: TPersistentClass; var Component: TComponent);
+    procedure OnSetName(Reader: TReader; Component: TComponent;
+      var Name: string);
+    procedure OnReadComponentsProc(Component: TComponent);
+  public
+    function Copy(ASourceRoot: TComponent; ASource: TComponent;
+      ATargetRoot, ATargetParent: TComponent): TComponent;
+  end;
+
+  TPersistentNexus = class(TComponent)
+  private
+    FHost: TPersistent;
+  public
+    class procedure CopyPersistent(ASource, ATarget: TPersistent);
+  published
+    property Host: TPersistent read FHost write FHost;
+  end;
+
+  TClassFinderEx = class(TClassFinder)
+  private
+    FGetter: TProc<TPersistentClass>;
+    procedure InternalGetClass(AClass: TPersistentClass);
+  public
+    property Getter: TProc<TPersistentClass> read FGetter write FGetter;
+    constructor Create(AGetter: TProc<TPersistentClass>;
+      AClass: TPersistentClass = nil; AIncludeActiveGroups: Boolean = False);
+  end;
+
+var
+  RTTIContext: TRttiContext;
+
+procedure ClassFinder(AGetter: TProc<TPersistentClass>);
+begin
+  with TClassFinderEx.Create(AGetter) do
+    try
+      GetClasses(InternalGetClass);
+    finally
+      Free;
+    end;
+end;
+
+function GetJsonValue(AJsonObject: TJSONValue; const AKeyPath: array of string;
+  AValueClass: TClass; AGetter: TProc<TJSONValue>): Boolean;
+var
+  I: Integer;
+  LKey: TJSONValue;
+  LPair: TJSONPair;
+begin
+  Result := False;
+  LKey := AJsonObject;
+  for I := 0 to Length(AKeyPath) - 1 do
+    if Assigned(LKey) and (LKey is TJSONObject) then
+    begin
+      LPair := TJSONObject(LKey).Get(AKeyPath[I]);
+      if Assigned(LPair) then
+        LKey := LPair.JsonValue
+      else
+        LKey := nil;
+    end
+    else
+      Exit(False);
+  Result := Assigned(LKey);
+  if Result and Assigned(AGetter) and
+    ((AValueClass = nil) or (LKey.InheritsFrom(AValueClass))) then
+    AGetter(LKey);
+end;
+
+function ForeachJsonArray(AJsonObject: TJSONValue;
+  const AKeyPath: array of string; AGetter: TProc<TJSONValue>): Boolean;
+var
+  LArray: TJSONArray;
+  L: TJSONValue;
+begin
+  Result := GetJsonValue(AJsonObject, AKeyPath, TJSONArray,
+    procedure(J: TJSONValue)
+    begin
+      LArray := TJSONArray(J);
+    end);
+  if Result and Assigned(AGetter) then
+    for L in LArray do
+      AGetter(L);
+end;
+
+function Char8DateToDate(AChar8Date: Integer): TDate;
+var
+  Y, M, D: Integer;
+begin
+  if AChar8Date = 0 then
+    Result := 0
+  else
+  begin
+    Y := AChar8Date div 10000;
+    M := (AChar8Date mod 10000) div 100;
+    D := AChar8Date mod 100;
+    Result := EncodeDate(Y, M, D);
+  end;
+end;
+
+function CopyComponent(ASource, ASourceRoot, ATargetRoot,
+  ATargetParent: TComponent): TComponent;
+begin
+  with TCopyUtility.Create do
+    try
+      Result := Copy(ASource, ASourceRoot, ATargetRoot, ATargetParent);
+    finally
+      Free;
+    end;
+end;
+
+procedure CopyPersistent(ASource, ATarget: TPersistent);
+begin
+  TPersistentNexus.CopyPersistent(ASource, ATarget);
+end;
+
+procedure StreamAccessor(W: TProc<TWriter>; R: TProc<TReader>);
+var
+  LMem: TMemoryStream;
+  LW: TWriter;
+  LR: TReader;
+begin
+  LMem := TMemoryStream.Create();
+  try
+    LW := TWriter.Create(LMem, 1024);
+    try
+      W(LW);
+    finally
+      LW.Free;
+    end;
+    LMem.Position := 0;
+    LR := TReader.Create(LMem, 1024);
+    try
+      R(LR);
+    finally
+      LR.Free;
+    end;
+  finally
+    LMem.Free;
+  end;
+end;
+
+procedure SaveToDFM(ASetter: TProc<TStream>; AStream: TStream;
+AFmt: TStreamOriginalFormat = sofText); overload;
+var
+  LMem: TMemoryStream;
+begin
+  LMem := TMemoryStream.Create;
+  try
+    ASetter(LMem);
+    LMem.Position := 0;
+    ObjectBinaryToText(LMem, AStream, AFmt);
+  finally
+    LMem.Free;
+  end;
+end;
+
+procedure SaveToDFM(ASetter: TProc<TStream>; AFileName: string;
+AFmt: TStreamOriginalFormat = sofText); overload;
+var
+  LFile: TFileStream;
+begin
+  LFile := TFileStream.Create(AFileName, fmCreate);
+  try
+    SaveToDFM(ASetter, LFile, AFmt);
+  finally
+    LFile.Free;
+  end;
+end;
+
+procedure SaveToDFM(AComponent: TComponent; AFileName: string;
+AFmt: TStreamOriginalFormat = sofText); overload;
+begin
+  SaveToDFM(
+    procedure(S: TStream)
+    begin
+      with TWriter.Create(S, 8192) do
+        try
+          WriteRootComponent(AComponent);
+        finally
+          Free;
+        end;
+    end, AFileName, AFmt);
+end;
+
+procedure LoadFromDFM(ASetter: TProc<TStream>; AStream: TStream); overload;
+var
+  LMem: TMemoryStream;
+  LFmt: TStreamOriginalFormat;
+begin
+  LMem := TMemoryStream.Create;
+  try
+    LFmt := sofBinary;
+    ObjectTextToBinary(AStream, LMem, LFmt);
+    LMem.Position := 0;
+    ASetter(LMem);
+  finally
+    LMem.Free;
+  end;
+end;
+
+procedure LoadFromDFM(ASetter: TProc<TStream>; AFileName: string); overload;
+var
+  LFile: TFileStream;
+begin
+  LFile := TFileStream.Create(AFileName, fmOpenRead, fmShareDenyWrite);
+  try
+    LFile.Position := 0;
+    LoadFromDFM(ASetter, LFile);
+  finally
+    LFile.Free;
+  end;
+end;
+
+procedure IterateComponent(AComponent: TComponent; AGetter: TProc<TComponent>;
+ARecursive: Boolean);
+var
+  I: Integer;
+begin
+  if Assigned(AComponent) then
+    for I := 0 to AComponent.ComponentCount - 1 do
+    begin
+      AGetter(AComponent.Components[I]);
+      if ARecursive then
+        IterateComponent(AComponent.Components[I], AGetter, ARecursive);
+    end;
+end;
+
+procedure IterateMethods(AClass: TClass; AGetter: TProc<TRttiMethod>);
+var
+  LType: TRttiType;
+  LMethod: TRttiMethod;
+begin
+  if AClass <> nil then
+  begin
+    LType := RTTIContext.GetType(AClass);
+    for LMethod in LType.GetMethods do
+      if LMethod.Visibility = mvPublished then
+        AGetter(LMethod);
+  end;
+end;
+
+procedure IterateProps(AHost: TObject; ATypeKinds: TTypeKinds;
+AGetter: TProc<PPropInfo>);
+var
+  LType: TRttiType;
+  LProp: TRttiProperty;
+begin
+  if Assigned(AHost) then
+  begin
+    LType := RTTIContext.GetType(AHost.ClassType);
+    for LProp in LType.GetProperties do
+      if (LProp is TRttiInstanceProperty) and (LProp.Visibility = mvPublished)
+        and (LProp.PropertyType.TypeKind in ATypeKinds) then
+      begin
+        AGetter((LProp as TRttiInstanceProperty).PropInfo);
+      end;
+  end;
+
+end;
+
+procedure IterateObjects(AHost: TObject; AGetter: TProc<TObject>);
+var
+  I: Integer;
+begin
+  if Assigned(AHost) then
+  begin
+    IterateProps(AHost, [tkClass],
+      procedure(P: PPropInfo)
+      var
+        LObjectProp: TObject;
+      begin
+        LObjectProp := GetObjectProp(AHost, P);
+        if Assigned(LObjectProp) then
+        begin
+          AGetter(TPersistent(LObjectProp));
+          IterateObjects(TPersistent(LObjectProp), AGetter);
+        end;
+      end);
+
+    if AHost is TComponent then
+      with AHost as TComponent do
+        for I := 0 to ComponentCount - 1 do
+        begin
+          AGetter(Components[I]);
+          IterateObjects(Components[I], AGetter);
+        end
+    else if AHost is TCollection then
+      with AHost as TCollection do
+        for I := 0 to Count - 1 do
+        begin
+          AGetter(Items[I]);
+          IterateObjects(Items[I], AGetter);
+        end;
+  end;
+end;
+
+procedure IterateObjects(AHost, ARoot: TObject; AGetter: TProc<TObject>);
+var
+  I: Integer;
+begin
+  if Assigned(ARoot) then
+  begin
+    IterateProps(ARoot, [tkClass],
+      procedure(P: PPropInfo)
+      var
+        LObjectProp: TObject;
+      begin
+        LObjectProp := GetObjectProp(ARoot, P);
+        if Assigned(LObjectProp) then
+        begin
+          AGetter(TPersistent(LObjectProp));
+          IterateObjects(AHost, TPersistent(LObjectProp), AGetter);
+        end;
+      end);
+
+    if ARoot <> AHost then
+      if ARoot is TComponent then
+        with ARoot as TComponent do
+          for I := 0 to ComponentCount - 1 do
+          begin
+            AGetter(Components[I]);
+            IterateObjects(AHost, Components[I], AGetter);
+            if AHost = Components[I] then
+              Break;
+          end
+      else if ARoot is TCollection then
+        with ARoot as TCollection do
+          for I := 0 to Count - 1 do
+          begin
+            AGetter(Items[I]);
+            IterateObjects(AHost, Items[I], AGetter);
+            if AHost = Items[I] then
+              Break;
+          end;
+  end;
+end;
+
+procedure SplitColumn(const ALine: string; AGetter: TTextLine;
+const ASpliter: Char = ',');
+var
+  S, P: PChar;
+  I: Integer;
+begin
+  if ALine <> '' then
+  begin
+    S := @ALine[1];
+    I := 0;
+    if S^ = '"' then
+    begin
+
+    end
+    else
+      while not(S^ in [#0, #10, #13]) do
+      begin
+        P := S;
+        while not(P^ in [#0, #10, #13, ASpliter]) do
+          Inc(P);
+        AGetter(I, Copy(S, 0, P - S));
+        if P^ = ASpliter then
+          Inc(P);
+        Inc(I);
+        S := P;
+      end;
+  end;
+end;
+
+function FindSubStr(const AStr: string; AValues: array of string;
+AUnmatched, AMatched: TGetStr): Boolean;
+
+  function Matched(var ASource: PChar; ASub: PChar): Boolean;
+  begin
+    Result := Assigned(ASource) and Assigned(ASub);
+    if Result then
+      while (ASource^ <> #0) and (ASub^ <> #0) do
+        if SameText(ASource^, ASub^) then
+        begin
+          Inc(ASource);
+          Inc(ASub);
+          if (ASource^ = #0) and (ASub^ <> #0) then
+          begin
+            Result := False;
+            Break;
+          end;
+        end
+        else
+        begin
+          Result := False;
+          Break;
+        end;
+  end;
+
+var
+  S, P, Source: PChar;
+  I: Integer;
+begin
+  Result := False;
+  if AStr <> '' then
+  begin
+    Source := @AStr[1];
+    S := Source;
+    while S^ <> #0 do
+    begin
+      P := S;
+      for I := Low(AValues) to High(AValues) do
+        if Matched(P, @AValues[I][1]) then
+        begin
+          if Assigned(AUnmatched) then
+            AUnmatched(Copy(Source, 0, S - Source));
+          if Assigned(AMatched) then
+            AMatched(AValues[I]);
+          Source := P;
+          Result := True;
+          Break;
+        end;
+      if (P^ <> #0) and (P = S) then
+        Inc(P);
+      S := P;
+    end;
+    if (S^ = #0) and (Source^ <> #0) then
+      if Assigned(AUnmatched) then
+        AUnmatched(Copy(Source, 0, S - Source));
+  end;
+end;
+
+procedure FindSubAnsiStr(const AStr: AnsiString; AValues: array of AnsiString;
+AUnmatched, AMatched: TGetAnsiStr);
+
+  function Matched(var ASource: PAnsiChar; ASub: PAnsiChar): Boolean;
+  begin
+    Result := Assigned(ASource) and Assigned(ASub);
+    if Result then
+      while (ASource^ <> #0) and (ASub^ <> #0) do
+        if System.AnsiStrings.SameText(ASource^, ASub^) then
+        begin
+          Inc(ASource);
+          Inc(ASub);
+          if (ASource^ = #0) and (ASub^ <> #0) then
+          begin
+            Result := False;
+            Break;
+          end;
+        end
+        else
+        begin
+          Result := False;
+          Break;
+        end;
+  end;
+
+var
+  S, P, Source: PAnsiChar;
+  I: Integer;
+begin
+  if AStr <> '' then
+  begin
+    Source := @AStr[1];
+    S := Source;
+    while S^ <> #0 do
+    begin
+      P := S;
+      for I := Low(AValues) to High(AValues) do
+        if Matched(P, @AValues[I][1]) then
+        begin
+          AUnmatched(Copy(Source, 0, S - Source));
+          AMatched(AValues[I]);
+          Source := P;
+          Break;
+        end;
+      if (P^ <> #0) and (P = S) then
+        Inc(P);
+      S := P;
+    end;
+    if (S^ = #0) and (Source^ <> #0) then
+      AUnmatched(Copy(Source, 0, S - Source));
+  end;
+end;
+
+function SplitAnsiString(const S: AnsiString; const Delimiters: AnsiChar)
+  : TAnsiStringDynArray;
+var
+  StartIdx: Integer;
+  FoundIdx: Integer;
+  SplitPoints: Integer;
+  CurrentSplit: Integer;
+  I: Integer;
+begin
+  Result := nil;
+
+  if S <> '' then
+  begin
+    { Determine the length of the resulting array }
+    SplitPoints := 0;
+    for I := 1 to Length(S) do
+      if S[I] = Delimiters then
+        Inc(SplitPoints);
+
+    SetLength(Result, SplitPoints + 1);
+
+    { Split the string and fill the resulting array }
+    StartIdx := 1;
+    CurrentSplit := 0;
+    repeat
+      for FoundIdx := StartIdx to Length(S) do
+        if S[FoundIdx] = Delimiters then
+          Break;
+      if FoundIdx <= Length(S) then
+      begin
+        Result[CurrentSplit] := Copy(S, StartIdx, FoundIdx - StartIdx);
+        Inc(CurrentSplit);
+        StartIdx := FoundIdx + 1;
+      end;
+    until CurrentSplit = SplitPoints;
+
+    // copy the remaining part in case the string does not end in a delimiter
+    Result[SplitPoints] := Copy(S, StartIdx, Length(S) - StartIdx + 1);
+  end;
+end;
+
+function UniqName(AExisting: TPredicate<string>; const APrefix: string;
+const AFmt: string): string;
+var
+  I: Integer;
+begin
+  if Trim(APrefix) = '' then
+    Result := ''
+  else
+  begin
+    I := 1;
+    while AExisting(Format(AFmt, [APrefix, I])) do
+      Inc(I);
+    Result := Format(AFmt, [APrefix, I]);
+  end;
+end;
+
+function CompliantName(const AName: string): string;
+var
+  I: Integer;
+begin
+  Result := Trim(AName);
+  if Result <> '' then
+  begin
+    if not(Result[1] in ['A' .. 'Z', '_', 'a' .. 'z']) then
+      Result[1] := '_';
+    for I := 2 to Length(Result) do
+      if not(Result[I] in ['0' .. '9', 'A' .. 'Z', '_', 'a' .. 'z']) then
+        Result[I] := '_';
+  end;
+end;
+
+function IncChar(var S: PChar; ACount: LongWord = 1): Boolean;
+begin
+  while (ACount > 0) and (S^ <> #0) do
+  begin
+    Inc(S);
+    Dec(ACount);
+  end;
+  Result := ACount = 0;
+end;
+
+function IncUntil(var S: PChar; AUntil: TPredicate<Char>;
+AToNext: Boolean = True): Boolean;
+begin
+  Result := False;
+  while S^ <> #0 do
+    if AUntil(S^) then
+    begin
+      Result := True;
+      if AToNext then
+        Inc(S);
+      Break;
+    end
+    else
+      Inc(S);
+end;
+
+function IsChar(ACondition: Char): TPredicate<Char>;
+begin
+  Result := function(C: Char): Boolean
+    begin
+      Result := ACondition = C;
+    end;
+end;
+
+function ReadHeader(S: PChar): PChar;
+begin
+  Result := S;
+  if IncUntil(S, IsChar('<')) and IncUntil(S, IsChar('?')) and
+    IncUntil(S, IsChar('?')) and IncUntil(S, IsChar('>')) then
+    Result := S;
+end;
+
+procedure ObjectXMLToBinary(ASource: PChar; AWriter: TWriter);
+begin
+
+end;
+
+{ TNexus }
+
+procedure TNexus.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  if Assigned(FOnFreeNotify) and (Operation = opRemove) and (AComponent <> Self)
+  then
+    FOnFreeNotify(AComponent);
+  inherited;
+
+end;
+
+{ TCopyUtility }
+
+function TCopyUtility.Copy(ASourceRoot: TComponent; ASource: TComponent;
+ATargetRoot, ATargetParent: TComponent): TComponent;
+begin
+  StreamAccessor(
+    procedure(W: TWriter)
+    begin
+      W.Root := ASourceRoot;
+      W.WriteSignature;
+      W.WriteComponent(ASource);
+      W.WriteListEnd;
+    end,
+    procedure(R: TReader)
+    begin
+      FTargetRoot := ATargetRoot;
+      FTarget := nil;
+      R.OnSetName := Self.OnSetName;
+      R.OnAncestorNotFound := Self.OnAncestorNotFound;
+      R.ReadComponents(ATargetRoot, ATargetParent, OnReadComponentsProc);
+    end);
+  Result := FTarget;
+end;
+
+procedure TCopyUtility.OnAncestorNotFound(Reader: TReader;
+const ComponentName: string; ComponentClass: TPersistentClass;
+var Component: TComponent);
+begin
+  if Assigned(FTargetRoot) then
+    if SameText(ComponentName, FTargetRoot.Name) then
+      Component := FTargetRoot
+    else
+      Component := FTargetRoot.FindComponent(ComponentName);
+end;
+
+procedure TCopyUtility.OnReadComponentsProc(Component: TComponent);
+begin
+  FTarget := Component;
+end;
+
+procedure TCopyUtility.OnSetName(Reader: TReader; Component: TComponent;
+var Name: string);
+var
+  I: Integer;
+begin
+  if Assigned(Component.Owner) then
+    if Component.Owner.FindComponent(Name) <> nil then
+    begin
+      I := 1;
+      while Component.Owner.FindComponent(Format('%s%d', [name, I])) <> nil do
+        Inc(I);
+      Name := Format('%s%d', [name, I]);
+    end;
+end;
+
+{ TPersistentNexus }
+
+class procedure TPersistentNexus.CopyPersistent(ASource, ATarget: TPersistent);
+var
+  N: TPersistentNexus;
+begin
+  if Assigned(ASource) and Assigned(ATarget) then
+  begin
+    N := TPersistentNexus.Create(nil);
+    try
+      StreamAccessor(
+        procedure(W: TWriter)
+        begin
+          N.FHost := ASource;
+          W.WriteRootComponent(N);
+        end,
+        procedure(R: TReader)
+        begin
+          N.FHost := ATarget;
+          R.ReadRootComponent(N);
+        end);
+    finally
+      N.Free;
+    end;
+  end;
+end;
+
+{ TReaderEx }
+
+procedure TReaderEx.ReadProperty(AInstance: TPersistent);
+begin
+  inherited ReadProperty(AInstance);
+end;
+
+{ TClassFinderEx }
+
+constructor TClassFinderEx.Create(AGetter: TProc<TPersistentClass>;
+AClass: TPersistentClass; AIncludeActiveGroups: Boolean);
+begin
+  inherited Create(AClass, AIncludeActiveGroups);
+  FGetter := AGetter;
+end;
+
+procedure TClassFinderEx.InternalGetClass(AClass: TPersistentClass);
+begin
+  if Assigned(FGetter) then
+    FGetter(AClass);
+end;
+
+{ TParamAttribute }
+
+constructor TParamAttribute.Create(const AParamName, AHelp: string);
+begin
+  FParamName := AParamName;
+  FHelp := AHelp;
+end;
+
+initialization
+
+RTTIContext := TRttiContext.Create;
+RegisterClasses([TPersistentNexus]);
+
+finalization
+
+RTTIContext.Free;
+UnRegisterClasses([TPersistentNexus]);
+
+end.

@@ -1,0 +1,14 @@
+object DataModuleMain: TDataModuleMain
+  OldCreateOrder = False
+  Height = 150
+  Width = 215
+  object ilMain: TImageList
+    Left = 24
+    Top = 8
+  end
+  object alMain: TActionList
+    Images = ilMain
+    Left = 128
+    Top = 32
+  end
+end

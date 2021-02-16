@@ -1,0 +1,24 @@
+object FrameInspector: TFrameInspector
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  ClientHeight = 240
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 314
+  DesignTop = 84
+  object TIPropertyGrid1: TTIPropertyGrid
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 320
+    Align = alClient
+    CheckboxForBoolean = False
+    DefaultValueFont.Color = clWindowText
+    Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw, tkProcVar, tkUString, tkUChar, tkHelper, tkFile, tkClassRef, tkPointer]
+    Indent = 16
+    NameFont.Color = clWindowText
+    ValueFont.Color = clMaroon
+  end
+end

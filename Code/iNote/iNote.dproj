@@ -105,17 +105,8 @@
             <Form>FormMain</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="dmMain.pas">
-            <Form>DataModuleMain</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
         <DCCReference Include="fmBaseDesigner.pas">
-            <Form>FormBaseDesigner</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="fmNote.pas">
-            <Form>FormNote</Form>
+            <Form>FrameBaseDesigner</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\Common\DockForm.pas">
@@ -123,6 +114,19 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="..\Common\PersonalityConst.pas"/>
+        <DCCReference Include="..\Common\uUtils.pas"/>
+        <DCCReference Include="..\Common\uComponentContainers.pas"/>
+        <DCCReference Include="..\Common\fmObjectTree.pas">
+            <Form>FrameObjectTree</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\Common\uDesigner.pas"/>
+        <DCCReference Include="dmMain.pas">
+            <Form>DataModuleMain</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -144,7 +148,6 @@
                     <Source Name="MainSource">iNote.dpr</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\20.0\bpl\LockBox3FMXDD260.bpl">TurboPack LockBox 3 FMX designtime package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k260.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp260.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="C:\Program Files (x86)\Raize\CS5\Bin\CodeSiteExpressPkg_Design260.bpl">CodeSite Express 5.3.3</Excluded_Packages>

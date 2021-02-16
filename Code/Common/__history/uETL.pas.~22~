@@ -1,0 +1,78 @@
+unit uETL;
+
+interface
+
+uses
+  classes, sysutils, uComponentContainers, contnrs;
+
+type
+  TETLObject = class(TComponentContainer)
+
+  end;
+
+  TETLFieldType = (ftUnknown, ftInteger, ftNumber, ftString, ftDateTime);
+
+  TETLField = class(TETLObject)
+  private
+    FFieldName: string;
+    FFieldType: TETLFieldType;
+    FFormat: string;
+  published
+    property FieldName: string read FFieldName write FFieldName;
+    property FieldType: TETLFieldType read FFieldType write FFieldType;
+    property Format: string read FFormat write FFormat;
+  end;
+
+  TETLTable = class(TETLObject)
+  private
+    FFieldList: TComponentList;
+  protected
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+
+  public
+    procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
+    function AddField(): TETLField;
+  end;
+
+  TetlCSVTable = class(TETLTable)
+
+  end;
+
+implementation
+
+{ TETLTable }
+
+procedure TETLTable.AfterConstruction;
+begin
+  inherited;
+
+end;
+
+procedure TETLTable.BeforeDestruction;
+begin
+  inherited;
+  if Assigned(FFieldList) then
+    FreeAndNil(FFieldList);
+end;
+
+procedure TETLTable.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited;
+  if AComponent.Owner = Self then
+    case Operation of
+      opInsert:
+        if AComponent is TETLField then
+        begin
+          if not Assigned(FFieldList) then
+            FFieldList := TComponentList.Create(False);
+          if FFieldList.IndexOf(AComponent) < 0 then
+            FFieldList.Add(AComponent);
+        end;
+      opRemove:
+        ;
+    end;
+end;
+
+end.

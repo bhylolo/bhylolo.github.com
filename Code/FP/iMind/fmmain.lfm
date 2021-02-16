@@ -1,0 +1,80 @@
+object FormMain: TFormMain
+  Left = 440
+  Height = 259
+  Top = 129
+  Width = 513
+  Caption = 'FormMain'
+  ClientHeight = 259
+  ClientWidth = 513
+  LCLVersion = '2.0.10.0'
+  object Splitter1: TSplitter
+    Left = 0
+    Height = 233
+    Top = 26
+    Width = 5
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 513
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 1
+    object ToolButton1: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'Add&Root'
+    end
+    object ToolButton2: TToolButton
+      Left = 61
+      Top = 2
+      Caption = 'Add&Sibling'
+    end
+    object ToolButton3: TToolButton
+      Left = 132
+      Top = 2
+      Caption = 'Add&Child'
+    end
+    object ToolButton4: TToolButton
+      Left = 193
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton4'
+      Style = tbsSeparator
+    end
+    object ToolButton5: TToolButton
+      Left = 201
+      Top = 2
+      Caption = '&Delete'
+    end
+  end
+  object PageControl1: TPageControl
+    Left = 5
+    Height = 233
+    Top = 26
+    Width = 508
+    Align = alClient
+    TabOrder = 2
+  end
+  object ActionList1: TActionList
+    Left = 112
+    Top = 48
+    object acAddRoot: TAction
+      Caption = '&Root'
+      OnUpdate = acAddRootUpdate
+    end
+    object acAddChild: TAction
+      Caption = '&Child'
+      OnUpdate = acAddChildUpdate
+    end
+    object acAddSibling: TAction
+      Caption = '&Sibling'
+      OnUpdate = acAddSiblingUpdate
+    end
+    object acDeleteNode: TAction
+      Caption = '&Delete'
+      OnUpdate = acDeleteNodeUpdate
+    end
+  end
+end

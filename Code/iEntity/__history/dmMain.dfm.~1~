@@ -1,0 +1,13 @@
+object DataModule1: TDataModule1
+  OldCreateOrder = False
+  Height = 283
+  Width = 370
+  object ImageList1: TImageList
+    Left = 88
+    Top = 56
+  end
+  object ActionList1: TActionList
+    Left = 88
+    Top = 112
+  end
+end

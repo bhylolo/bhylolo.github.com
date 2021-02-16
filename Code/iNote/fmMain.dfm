@@ -11,7 +11,6 @@ object FormMain: TFormMain
   Font.Name = 'Tahoma'
   Font.Style = []
   FormStyle = fsMDIForm
-  Menu = DataModuleMain.mmMain
   OldCreateOrder = False
   Position = poScreenCenter
   PixelsPerInch = 96
@@ -22,10 +21,6 @@ object FormMain: TFormMain
     Width = 635
     Height = 29
     Caption = 'ToolBar1'
-    Images = DataModuleMain.il
     TabOrder = 0
-    ExplicitLeft = 248
-    ExplicitTop = 176
-    ExplicitWidth = 150
   end
 end

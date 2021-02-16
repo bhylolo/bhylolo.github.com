@@ -1,0 +1,73 @@
+unit uETL;
+
+interface
+
+uses
+  classes, sysutils, uComponentContainers, contnrs;
+
+type
+  TETLObject = class(TComponentContainer)
+
+  end;
+
+  TETLFieldType = (ftUnknown, ftInteger, ftNumber, ftString, ftDateTime);
+
+  TETLField = class(TETLObject)
+  private
+    FFieldName: string;
+    FFieldType: TETLFieldType;
+    FFormat: string;
+  published
+    property FieldName: string read FFieldName write FFieldName;
+    property FieldType: TETLFieldType read FFieldType write FFieldType;
+    property Format: string read FFormat write FFormat;
+  end;
+
+  TETLTable = class(TETLObject)
+  public
+    procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
+    function AddField(AName: string): TETLField;
+    procedure ClearFields();
+  end;
+
+  TetlCSVTable = class(TETLTable)
+  private
+    FFileName: TFileName;
+  published
+    property FileName: TFileName read FFileName write FFileName;
+
+  end;
+
+implementation
+
+{ TETLTable }
+
+function TETLTable.AddField(AName: string): TETLField;
+begin
+  Result := TETLField.Create(Self);
+  Result.Name := Self.AuditName('f');
+end;
+
+procedure TETLTable.AfterConstruction;
+begin
+  inherited;
+
+end;
+
+procedure TETLTable.BeforeDestruction;
+begin
+  inherited;
+
+end;
+
+procedure TETLTable.ClearFields;
+var
+  I: Integer;
+begin
+  for I := Self.ComponentCount - 1 downto 0 do
+    if Components[I] is TETLField then
+      Components[I].Free;
+end;
+
+end.

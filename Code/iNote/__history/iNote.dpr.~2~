@@ -1,0 +1,24 @@
+program iNote;
+
+uses
+  Vcl.Forms,
+  fmMain in 'fmMain.pas' {FormMain},
+  fmBaseDesigner in 'fmBaseDesigner.pas' {FormBaseDesigner},
+  fmNote in 'fmNote.pas' {FormNote},
+  DockForm in '..\Common\DockForm.pas' {DockableForm},
+  PersonalityConst in '..\Common\PersonalityConst.pas',
+  uUtils in '..\Common\uUtils.pas',
+  uComponentContainers in '..\Common\uComponentContainers.pas',
+  fmObjectTree in '..\Common\fmObjectTree.pas' {FrameObjectTree: TFrame};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TFormMain, FormMain);
+  Application.CreateForm(TFormBaseDesigner, FormBaseDesigner);
+  Application.CreateForm(TFormNote, FormNote);
+  Application.CreateForm(TDockableForm, DockableForm);
+  Application.Run;
+end.

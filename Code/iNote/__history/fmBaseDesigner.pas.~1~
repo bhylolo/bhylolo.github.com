@@ -1,0 +1,42 @@
+unit fmBaseDesigner;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+
+type
+  TFormBaseDesigner = class(TForm)
+  private
+    FFileName: string;
+    FModifed: Boolean;
+    procedure SetFileName(const Value: string);
+    procedure SetModifed(const Value: Boolean);
+  protected
+
+  public
+    property FileName: string read FFileName write SetFileName;
+    property Modifed: Boolean read FModifed write SetModifed;
+  end;
+
+var
+  FormBaseDesigner: TFormBaseDesigner;
+
+implementation
+
+{$R *.dfm}
+{ TFormBaseDesigner }
+
+procedure TFormBaseDesigner.SetFileName(const Value: string);
+begin
+  FFileName := Value;
+end;
+
+procedure TFormBaseDesigner.SetModifed(const Value: Boolean);
+begin
+  FModifed := Value;
+end;
+
+end.

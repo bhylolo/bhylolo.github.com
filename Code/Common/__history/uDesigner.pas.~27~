@@ -1,0 +1,844 @@
+unit uDesigner;
+
+interface
+
+uses
+  classes, sysutils, DesignIntf, toolsapi, System.Types, System.TypInfo,
+  System.IniFiles, contnrs, System.Generics.Collections;
+
+type
+  TDesigner = class(TComponent, IDesignNotification, IDesignerNotify, IDesigner,
+    IDesigner200, IDesigner170, IDesigner100, IDesigner80, IDesigner70,
+    IDesigner60)
+  private
+    FModified: Boolean;
+    FRoot: TComponent;
+  public
+    { IDesignNotification }
+    procedure ItemDeleted(const ADesigner: IDesigner; AItem: TPersistent);
+    procedure ItemInserted(const ADesigner: IDesigner; AItem: TPersistent);
+    procedure ItemsModified(const ADesigner: IDesigner);
+    procedure SelectionChanged(const ADesigner: IDesigner;
+      const ASelection: IDesignerSelections);
+    procedure DesignerOpened(const ADesigner: IDesigner;
+      AResurrecting: Boolean);
+    procedure DesignerClosed(const ADesigner: IDesigner;
+      AGoingDormant: Boolean);
+    { IDesigner60 }
+    procedure Activate;
+    procedure Modified;
+    function CreateMethod(const Name: string; TypeData: PTypeData)
+      : TMethod; overload;
+    function GetMethodName(const Method: TMethod): string;
+    procedure GetMethods(TypeData: PTypeData; Proc: TGetStrProc); overload;
+    function GetPathAndBaseExeName: string;
+    function GetPrivateDirectory: string;
+    function GetBaseRegKey: string;
+    function GetIDEOptions: TCustomIniFile;
+    procedure GetSelections(const List: IDesignerSelections);
+    function MethodExists(const Name: string): Boolean;
+    procedure RenameMethod(const CurName, NewName: string);
+    procedure SelectComponent(Instance: TPersistent); overload;
+    procedure SetSelections(const List: IDesignerSelections);
+    procedure ShowMethod(const Name: string);
+    procedure GetComponentNames(TypeData: PTypeData; Proc: TGetStrProc);
+    function GetComponent(const Name: string): TComponent;
+    function GetComponentName(Component: TComponent): string;
+    function GetObject(const Name: string): TPersistent;
+    function GetObjectName(Instance: TPersistent): string;
+    procedure GetObjectNames(TypeData: PTypeData; Proc: TGetStrProc);
+    function MethodFromAncestor(const Method: TMethod): Boolean;
+    function CreateComponent(ComponentClass: TComponentClass;
+      Parent: TComponent; Left, Top, Width, Height: Integer): TComponent;
+    function CreateCurrentComponent(Parent: TComponent; const Rect: TRect)
+      : TComponent;
+    function IsComponentLinkable(Component: TComponent): Boolean;
+    function IsComponentHidden(Component: TComponent): Boolean;
+    procedure MakeComponentLinkable(Component: TComponent);
+    procedure Revert(Instance: TPersistent; PropInfo: PPropInfo);
+    function GetIsDormant: Boolean;
+    procedure GetProjectModules(Proc: TGetModuleProc);
+    function GetAncestorDesigner: IDesigner;
+    function IsSourceReadOnly: Boolean;
+    function GetScrollRanges(const ScrollPosition: TPoint): TPoint;
+    procedure Edit(const Component: TComponent);
+    procedure ChainCall(const MethodName, InstanceName, InstanceMethod: string;
+      TypeData: PTypeData); overload;
+    procedure ChainCall(const MethodName, InstanceName, InstanceMethod: string;
+      const AEventInfo: IEventInfo); overload;
+    procedure CopySelection;
+    procedure CutSelection;
+    function CanPaste: Boolean;
+    procedure PasteSelection;
+    procedure DeleteSelection(ADoAll: Boolean = False);
+    procedure ClearSelection;
+    procedure NoSelection;
+    procedure ModuleFileNames(var ImplFileName, IntfFileName,
+      FormFileName: string);
+    function GetRootClassName: string;
+    function UniqueName(const BaseName: string): string;
+    function GetRoot: TComponent;
+    function GetShiftState: TShiftState;
+    procedure ModalEdit(EditKey: Char; const ReturnWindow: IActivatable);
+    procedure SelectItemName(const PropertyName: string);
+    procedure Resurrect;
+    procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
+
+    property Root: TComponent read GetRoot;
+    property IsDormant: Boolean read GetIsDormant;
+    property AncestorDesigner: IDesigner read GetAncestorDesigner;
+    { IDesigner70 }
+    function GetActiveClassGroup: TPersistentClass;
+
+    function FindRootAncestor(const AClassName: string): TComponent;
+    property ActiveClassGroup: TPersistentClass read GetActiveClassGroup;
+    { IDesigner80 }
+    function CreateMethod(const Name: string; const AEventInfo: IEventInfo)
+      : TMethod; overload;
+    procedure GetMethods(const AEventInfo: IEventInfo;
+      Proc: TGetStrProc); overload;
+    procedure SelectComponent(const ADesignObject: IDesignObject); overload;
+    { IDesigner100 }
+    function GetDesignerExtension: string;
+
+    property DesignerExtention: string read GetDesignerExtension;
+    { IDesigner170 }
+    function GetAppDataDirectory(Local: Boolean = False): string;
+    { IDesigner200 }
+    function GetCurrentParent: TComponent;
+
+    property CurrentParent: TComponent read GetCurrentParent;
+    { IDesigner }
+    function CreateChild(ComponentClass: TComponentClass; Parent: TComponent)
+      : TComponent;
+    { IDesignerNotify }
+    procedure IntfModified;
+    procedure IntfNotification(AnObject: TPersistent; Operation: TOperation);
+    procedure IntfCanInsertComponent(AComponent: TComponent);
+    procedure IDesignerNotify.Modified = IntfModified;
+    procedure IDesignerNotify.Notification = IntfNotification;
+    procedure IDesignerNotify.CanInsertComponent = IntfCanInsertComponent;
+  end;
+
+implementation
+
+procedure Register();
+begin
+
+end;
+
+type
+  TIDE = class(TInterfaceList, IBorlandIDEServices70, IBorlandIDEServices)
+  protected
+    function QueryInterface(const IID: TGUID; out Obj): HRESULT; stdcall;
+  public
+    function SupportsService(const Service: TGUID): Boolean;
+    function GetService(const Service: TGUID): IInterface; overload;
+    function GetService(const Service: TGUID; out Svc): Boolean; overload;
+    procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
+  end;
+
+  TDesignNotificationList = class(TInterfaceList, IDesignNotification,
+    IDesignNotificationEx, IDesignNotificationViews)
+  private
+    class var DesignNotificationList: TDesignNotificationList;
+  private
+    procedure Foreach(AGetter: TProc<IDesignNotification>);
+  public
+    class function GetDesignNotificationList: TDesignNotificationList;
+    { IDesignNotification }
+    procedure ItemDeleted(const ADesigner: IDesigner; AItem: TPersistent);
+    procedure ItemInserted(const ADesigner: IDesigner; AItem: TPersistent);
+    procedure ItemsModified(const ADesigner: IDesigner);
+    procedure SelectionChanged(const ADesigner: IDesigner;
+      const ASelection: IDesignerSelections);
+    procedure DesignerOpened(const ADesigner: IDesigner;
+      AResurrecting: Boolean);
+    procedure DesignerClosed(const ADesigner: IDesigner;
+      AGoingDormant: Boolean);
+    { IDesignNotificationEx }
+    procedure DescendantUpdated(const ADesigner: IDesigner);
+    { IDesignNotificationViews }
+    procedure ViewAdded(const ADesigner: IDesigner; const ViewName: string);
+    procedure ViewRemoved(const ADesigner: IDesigner; const ViewName: string);
+
+  end;
+
+  TRegisterComponents = class(THashedStringList)
+  private
+    class var RegisterComponents: TRegisterComponents;
+
+  public
+    class function GetRegisterComponents(): TRegisterComponents;
+    class procedure AddComponents(const Page: string;
+      const ComponentClasses: array of TComponentClass);
+    class function GetComponentClasses(const Page: string;
+      AGetter: TProc<TComponentClass>): Boolean;
+  end;
+
+  TRegisterNoIcon = class(TClassList)
+  private
+    class var RegisterNoIcon: TRegisterNoIcon;
+  public
+    class function GetRegisterNoIcon(): TRegisterNoIcon;
+  end;
+
+  TRegisterCustomModule = class
+    (TDictionary<TComponentClass, TCustomModuleClass>)
+  private
+    class var RegisterCustomModule: TRegisterCustomModule;
+  end;
+
+function UniqueComponentName(const BaseName: string;
+  AOwner: TComponent): string;
+var
+  I: Integer;
+begin
+  if Assigned(AOwner) and (AOwner.FindComponent(BaseName) <> nil) then
+  begin
+    I := 1;
+    while AOwner.FindComponent(Format('%s%d', [BaseName, I])) <> nil do
+      Inc(I);
+    Result := Format('%s%d', [BaseName, I]);
+  end
+  else
+    Result := BaseName;
+end;
+
+procedure InternalRegisterDesignNotification(const DesignNotification
+  : IDesignNotification);
+begin
+  with TDesignNotificationList.GetDesignNotificationList do
+    if IndexOf(DesignNotification) < 0 then
+      Add(DesignNotification);
+end;
+
+procedure InternalUnregisterDesignNotification(const DesignNotification
+  : IDesignNotification);
+begin
+  if Assigned(TDesignNotificationList.DesignNotificationList) then
+    TDesignNotificationList.DesignNotificationList.Remove(DesignNotification);
+end;
+
+procedure InternalRegisterComponents(const Page: string;
+  const ComponentClasses: array of TComponentClass);
+begin
+  TRegisterComponents.AddComponents(Page, ComponentClasses);
+end;
+
+procedure InternalRegisterNoIconProc(const ComponentClasses
+  : array of TComponentClass);
+var
+  I: Integer;
+begin
+  with TRegisterNoIcon.GetRegisterNoIcon do
+    for I := Low(ComponentClasses) to High(ComponentClasses) do
+      if IndexOf(ComponentClasses[I]) < 0 then
+        Add(ComponentClasses[I]);
+end;
+
+procedure InternalRegisterCustomModuleProc(Group: Integer;
+  ComponentBaseClass: TComponentClass; CustomModuleClass: TCustomModuleClass);
+begin
+
+end;
+
+{ TDesigner }
+
+procedure TDesigner.Activate;
+begin
+
+end;
+
+procedure TDesigner.AfterConstruction;
+begin
+  inherited;
+  SetDesigning(True, True);
+end;
+
+procedure TDesigner.BeforeDestruction;
+begin
+  inherited;
+
+end;
+
+function TDesigner.CanPaste: Boolean;
+begin
+
+end;
+
+procedure TDesigner.ChainCall(const MethodName, InstanceName,
+  InstanceMethod: string; const AEventInfo: IEventInfo);
+begin
+
+end;
+
+procedure TDesigner.ChainCall(const MethodName, InstanceName,
+  InstanceMethod: string; TypeData: PTypeData);
+begin
+
+end;
+
+procedure TDesigner.ClearSelection;
+begin
+
+end;
+
+procedure TDesigner.CopySelection;
+begin
+
+end;
+
+function TDesigner.CreateChild(ComponentClass: TComponentClass;
+  Parent: TComponent): TComponent;
+begin
+  Result := CreateComponent(ComponentClass, Parent, 0, 0, 0, 0);
+end;
+
+function TDesigner.CreateComponent(ComponentClass: TComponentClass;
+  Parent: TComponent; Left, Top, Width, Height: Integer): TComponent;
+begin
+  if Parent = nil then
+    Parent := Root;
+  Result := ComponentClass.Create(Parent);
+end;
+
+function TDesigner.CreateCurrentComponent(Parent: TComponent; const Rect: TRect)
+  : TComponent;
+begin
+
+end;
+
+function TDesigner.CreateMethod(const Name: string;
+  TypeData: PTypeData): TMethod;
+begin
+
+end;
+
+function TDesigner.CreateMethod(const Name: string;
+  const AEventInfo: IEventInfo): TMethod;
+begin
+
+end;
+
+procedure TDesigner.CutSelection;
+begin
+
+end;
+
+procedure TDesigner.DeleteSelection(ADoAll: Boolean);
+begin
+
+end;
+
+procedure TDesigner.DesignerClosed(const ADesigner: IDesigner;
+  AGoingDormant: Boolean);
+begin
+
+end;
+
+procedure TDesigner.DesignerOpened(const ADesigner: IDesigner;
+  AResurrecting: Boolean);
+begin
+
+end;
+
+procedure TDesigner.Edit(const Component: TComponent);
+begin
+
+end;
+
+function TDesigner.FindRootAncestor(const AClassName: string): TComponent;
+begin
+
+end;
+
+function TDesigner.GetActiveClassGroup: TPersistentClass;
+begin
+
+end;
+
+function TDesigner.GetAncestorDesigner: IDesigner;
+begin
+
+end;
+
+function TDesigner.GetAppDataDirectory(Local: Boolean): string;
+begin
+
+end;
+
+function TDesigner.GetBaseRegKey: string;
+begin
+
+end;
+
+function TDesigner.GetComponent(const Name: string): TComponent;
+begin
+
+end;
+
+function TDesigner.GetComponentName(Component: TComponent): string;
+begin
+
+end;
+
+procedure TDesigner.GetComponentNames(TypeData: PTypeData; Proc: TGetStrProc);
+begin
+
+end;
+
+function TDesigner.GetCurrentParent: TComponent;
+begin
+
+end;
+
+function TDesigner.GetDesignerExtension: string;
+begin
+
+end;
+
+function TDesigner.GetIDEOptions: TCustomIniFile;
+begin
+
+end;
+
+function TDesigner.GetIsDormant: Boolean;
+begin
+
+end;
+
+function TDesigner.GetMethodName(const Method: TMethod): string;
+begin
+
+end;
+
+procedure TDesigner.GetMethods(const AEventInfo: IEventInfo; Proc: TGetStrProc);
+begin
+
+end;
+
+procedure TDesigner.GetMethods(TypeData: PTypeData; Proc: TGetStrProc);
+begin
+
+end;
+
+function TDesigner.GetObject(const Name: string): TPersistent;
+begin
+
+end;
+
+function TDesigner.GetObjectName(Instance: TPersistent): string;
+begin
+
+end;
+
+procedure TDesigner.GetObjectNames(TypeData: PTypeData; Proc: TGetStrProc);
+begin
+
+end;
+
+function TDesigner.GetPathAndBaseExeName: string;
+begin
+
+end;
+
+function TDesigner.GetPrivateDirectory: string;
+begin
+
+end;
+
+procedure TDesigner.GetProjectModules(Proc: TGetModuleProc);
+begin
+
+end;
+
+function TDesigner.GetRoot: TComponent;
+begin
+  Result := FRoot;
+end;
+
+function TDesigner.GetRootClassName: string;
+begin
+  if Assigned(FRoot) then
+    Result := FRoot.ClassName
+  else
+    Result := '';
+end;
+
+function TDesigner.GetScrollRanges(const ScrollPosition: TPoint): TPoint;
+begin
+
+end;
+
+procedure TDesigner.GetSelections(const List: IDesignerSelections);
+begin
+
+end;
+
+function TDesigner.GetShiftState: TShiftState;
+begin
+
+end;
+
+procedure TDesigner.IntfCanInsertComponent(AComponent: TComponent);
+begin
+
+end;
+
+procedure TDesigner.IntfModified;
+begin
+  Self.Modified;
+end;
+
+procedure TDesigner.IntfNotification(AnObject: TPersistent;
+  Operation: TOperation);
+begin
+  case Operation of
+    opInsert:
+      ItemInserted(Self, AnObject);
+    opRemove:
+      ItemDeleted(Self, AnObject);
+  end;
+  Self.Modified;
+end;
+
+function TDesigner.IsComponentHidden(Component: TComponent): Boolean;
+begin
+
+end;
+
+function TDesigner.IsComponentLinkable(Component: TComponent): Boolean;
+begin
+
+end;
+
+function TDesigner.IsSourceReadOnly: Boolean;
+begin
+
+end;
+
+procedure TDesigner.ItemDeleted(const ADesigner: IDesigner; AItem: TPersistent);
+begin
+  Modified;
+  TDesignNotificationList.GetDesignNotificationList.ItemDeleted
+    (ADesigner, AItem);
+end;
+
+procedure TDesigner.ItemInserted(const ADesigner: IDesigner;
+  AItem: TPersistent);
+begin
+  Modified;
+  TDesignNotificationList.GetDesignNotificationList.ItemInserted
+    (ADesigner, AItem);
+end;
+
+procedure TDesigner.ItemsModified(const ADesigner: IDesigner);
+begin
+  Modified;
+  TDesignNotificationList.GetDesignNotificationList.ItemsModified(ADesigner);
+end;
+
+procedure TDesigner.MakeComponentLinkable(Component: TComponent);
+begin
+
+end;
+
+function TDesigner.MethodExists(const Name: string): Boolean;
+begin
+
+end;
+
+function TDesigner.MethodFromAncestor(const Method: TMethod): Boolean;
+begin
+
+end;
+
+procedure TDesigner.ModalEdit(EditKey: Char; const ReturnWindow: IActivatable);
+begin
+
+end;
+
+procedure TDesigner.Modified;
+begin
+  FModified := True;
+end;
+
+procedure TDesigner.ModuleFileNames(var ImplFileName, IntfFileName,
+  FormFileName: string);
+begin
+
+end;
+
+procedure TDesigner.NoSelection;
+begin
+
+end;
+
+procedure TDesigner.PasteSelection;
+begin
+
+end;
+
+procedure TDesigner.RenameMethod(const CurName, NewName: string);
+begin
+
+end;
+
+procedure TDesigner.Resurrect;
+begin
+
+end;
+
+procedure TDesigner.Revert(Instance: TPersistent; PropInfo: PPropInfo);
+begin
+
+end;
+
+procedure TDesigner.SelectComponent(Instance: TPersistent);
+begin
+
+end;
+
+procedure TDesigner.SelectComponent(const ADesignObject: IDesignObject);
+begin
+
+end;
+
+procedure TDesigner.SelectionChanged(const ADesigner: IDesigner;
+  const ASelection: IDesignerSelections);
+begin
+
+end;
+
+procedure TDesigner.SelectItemName(const PropertyName: string);
+begin
+
+end;
+
+procedure TDesigner.SetSelections(const List: IDesignerSelections);
+begin
+
+end;
+
+procedure TDesigner.ShowMethod(const Name: string);
+begin
+
+end;
+
+function TDesigner.UniqueName(const BaseName: string): string;
+begin
+
+end;
+
+{ TDesignNotificationList }
+
+procedure TDesignNotificationList.DescendantUpdated(const ADesigner: IDesigner);
+begin
+
+end;
+
+procedure TDesignNotificationList.DesignerClosed(const ADesigner: IDesigner;
+  AGoingDormant: Boolean);
+begin
+
+end;
+
+procedure TDesignNotificationList.DesignerOpened(const ADesigner: IDesigner;
+  AResurrecting: Boolean);
+begin
+
+end;
+
+procedure TDesignNotificationList.Foreach(AGetter: TProc<IDesignNotification>);
+begin
+
+end;
+
+class function TDesignNotificationList.GetDesignNotificationList
+  : TDesignNotificationList;
+begin
+  if not Assigned(DesignNotificationList) then
+    DesignNotificationList := TDesignNotificationList.Create;
+  Result := DesignNotificationList;
+end;
+
+procedure TDesignNotificationList.ItemDeleted(const ADesigner: IDesigner;
+  AItem: TPersistent);
+begin
+
+end;
+
+procedure TDesignNotificationList.ItemInserted(const ADesigner: IDesigner;
+  AItem: TPersistent);
+begin
+
+end;
+
+procedure TDesignNotificationList.ItemsModified(const ADesigner: IDesigner);
+begin
+
+end;
+
+procedure TDesignNotificationList.SelectionChanged(const ADesigner: IDesigner;
+  const ASelection: IDesignerSelections);
+begin
+
+end;
+
+procedure TDesignNotificationList.ViewAdded(const ADesigner: IDesigner;
+  const ViewName: string);
+begin
+
+end;
+
+procedure TDesignNotificationList.ViewRemoved(const ADesigner: IDesigner;
+  const ViewName: string);
+begin
+
+end;
+
+{ TRegisterComponents }
+
+class procedure TRegisterComponents.AddComponents(const Page: string;
+  const ComponentClasses: array of TComponentClass);
+var
+  LList: TList<TComponentClass>;
+  I: Integer;
+begin
+  with GetRegisterComponents do
+  begin
+    I := IndexOf(Page);
+    if I < 0 then
+      I := AddObject(Page, TList<TComponentClass>.Create);
+    LList := Objects[I] as TList<TComponentClass>;
+
+    for I := Low(ComponentClasses) to High(ComponentClasses) do
+      if LList.IndexOf(ComponentClasses[I]) < 0 then
+        LList.Add(ComponentClasses[I]);
+  end;
+end;
+
+class function TRegisterComponents.GetComponentClasses(const Page: string;
+  AGetter: TProc<TComponentClass>): Boolean;
+var
+  I, LIndex: Integer;
+begin
+  with GetRegisterComponents do
+  begin
+    LIndex := IndexOf(Page);
+    Result := LIndex >= 0;
+    if Result then
+      with Objects[LIndex] as TList<TComponentClass> do
+        for I := 0 to Count - 1 do
+          AGetter(Items[I]);
+  end;
+end;
+
+class function TRegisterComponents.GetRegisterComponents: TRegisterComponents;
+begin
+  with TRegisterComponents do
+  begin
+    if RegisterComponents = nil then
+    begin
+      RegisterComponents := TRegisterComponents.Create(True);
+      RegisterComponents.CaseSensitive := False;
+    end;
+    Result := RegisterComponents;
+  end;
+end;
+
+{ TRegisterNoIcon }
+
+class function TRegisterNoIcon.GetRegisterNoIcon: TRegisterNoIcon;
+begin
+  if not Assigned(TRegisterNoIcon.RegisterNoIcon) then
+    TRegisterNoIcon.RegisterNoIcon := TRegisterNoIcon.Create;
+  Result := TRegisterNoIcon.RegisterNoIcon;
+end;
+
+{ TIDE }
+
+procedure TIDE.AfterConstruction;
+begin
+  inherited;
+  // Add(TOTAModuleServices.Create);
+  // Add(TOTAWizardServices.Create);
+end;
+
+procedure TIDE.BeforeDestruction;
+begin
+  inherited;
+end;
+
+function TIDE.GetService(const Service: TGUID): IInterface;
+begin
+  if not GetService(Service, Result) then
+    Result := nil;
+end;
+
+function TIDE.GetService(const Service: TGUID; out Svc): Boolean;
+begin
+  Result := QueryInterface(Service, Svc) = S_OK;
+end;
+
+function TIDE.QueryInterface(const IID: TGUID; out Obj): HRESULT;
+var
+  I: Integer;
+begin
+  Result := inherited QueryInterface(IID, Obj);
+  if Result <> S_OK then
+    for I := 0 to Self.Count - 1 do
+    begin
+      Result := Items[I].QueryInterface(IID, Obj);
+      if Result = S_OK then
+        Break;
+    end;
+end;
+
+function TIDE.SupportsService(const Service: TGUID): Boolean;
+begin
+  Result := GetService(Service) <> nil;
+end;
+
+initialization
+
+RegisterClasses([]);
+
+if Assigned(BorlandIDEServices) then
+  BorlandIDEServices := TIDE.Create;
+
+RegisterDesignNotificationProc := InternalRegisterDesignNotification;
+UnregisterDesignNotificationProc := InternalUnregisterDesignNotification;
+RegisterComponentsProc := InternalRegisterComponents;
+RegisterNoIconProc := InternalRegisterNoIconProc;
+RegisterCustomModuleProc := InternalRegisterCustomModuleProc;
+
+Register();
+
+finalization
+
+if Assigned(TRegisterComponents.RegisterComponents) then
+  FreeAndNil(TRegisterComponents.RegisterComponents);
+if Assigned(TRegisterNoIcon.RegisterNoIcon) then
+  FreeAndNil(TRegisterNoIcon.RegisterNoIcon);
+
+RegisterDesignNotificationProc := nil;
+UnregisterDesignNotificationProc := nil;
+RegisterComponentsProc := nil;
+RegisterNoIconProc := nil;
+RegisterComponentEditorProc := nil;
+LibraryWizardProc := nil;
+RegisterCustomModuleProc := nil;
+
+if Assigned(TDesignNotificationList.DesignNotificationList) then
+  FreeAndNil(TDesignNotificationList.DesignNotificationList);
+
+if Assigned(BorlandIDEServices) then
+  BorlandIDEServices := nil;
+
+UnRegisterClasses([]);
+
+end.

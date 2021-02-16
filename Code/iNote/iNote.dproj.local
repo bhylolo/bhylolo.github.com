@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2021/02/12 16:16:28.000.698,=D:\git\bhylolo.github.com\Code\Common\uUtils.pas</Transaction>
+    <Transaction>2021/02/12 16:16:42.000.263,=D:\git\bhylolo.github.com\Code\Common\uComponentContainers.pas</Transaction>
+    <Transaction>2021/02/12 16:16:48.000.355,=D:\git\bhylolo.github.com\Code\Common\fmObjectTree.pas</Transaction>
+    <Transaction>2021/02/12 16:17:56.000.757,=D:\git\bhylolo.github.com\Code\iNote\Unit1.pas</Transaction>
+    <Transaction>2021/02/12 16:18:06.000.241,D:\git\bhylolo.github.com\Code\iNote\Unit1.pas=D:\git\bhylolo.github.com\Code\Common\uDesigner.pas</Transaction>
+    <Transaction>2021/02/12 17:46:22.000.918,D:\git\bhylolo.github.com\Code\iNote\fmNote.pas=</Transaction>
+    <Transaction>2021/02/13 23:17:30.000.157,=D:\git\bhylolo.github.com\Code\iNote\Unit1.pas</Transaction>
+    <Transaction>2021/02/13 23:17:50.000.439,D:\git\bhylolo.github.com\Code\iNote\dmMain.pas=D:\git\bhylolo.github.com\Code\iNote\Unit1.pas</Transaction>
+    <Transaction>2021/02/13 23:17:50.000.439,D:\git\bhylolo.github.com\Code\iNote\dmMain.dfm=D:\git\bhylolo.github.com\Code\iNote\Unit1.dfm</Transaction>
+  </Transactions>
+</BorlandProject>

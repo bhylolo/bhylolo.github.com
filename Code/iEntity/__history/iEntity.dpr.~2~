@@ -1,0 +1,21 @@
+program iEntity;
+
+uses
+  Vcl.Forms,
+  fmMain in 'fmMain.pas' {FormMain},
+  fmObjectTree in '..\Common\fmObjectTree.pas' {FrameObjectTree: TFrame},
+  uComponentContainers in '..\Common\uComponentContainers.pas',
+  uUtils in '..\Common\uUtils.pas',
+  dmMain in 'dmMain.pas' {DataModule1: TDataModule},
+  fmChild in 'fmChild.pas' {FormChild};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TFormMain, FormMain);
+  Application.CreateForm(TDataModule1, DataModule1);
+  Application.CreateForm(TFormChild, FormChild);
+  Application.Run;
+end.

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="11"/>
+    <BuildModes Active="Default"/>
+    <Units Count="15">
+      <Unit0>
+        <Filename Value="iDesigner.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="23" Y="11"/>
+        <UsageCount Value="40"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="fmmain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormMain"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="fmMain"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="32"/>
+        <CursorPos X="28" Y="42"/>
+        <UsageCount Value="40"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\Common\fminspector.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FrameInspector"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fmInspector"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="39" Y="27"/>
+        <UsageCount Value="40"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\Common\fmcomponenttree.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FrameComponentTree"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fmComponentTree"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="51"/>
+        <CursorPos Y="59"/>
+        <UsageCount Value="40"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="..\Common\uutilities.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uUtilities"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <CursorPos X="34" Y="10"/>
+        <UsageCount Value="40"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="..\Common\fmobjecttree.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FrameObjectTree"/>
+        <ResourceBaseClass Value="Frame"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="110"/>
+        <CursorPos X="35" Y="128"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="C:\lazarus\components\ideintf\propedits.pp"/>
+        <UnitName Value="PropEdits"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1455"/>
+        <CursorPos X="15" Y="1471"/>
+        <UsageCount Value="14"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\objpas\classes\classesh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="409"/>
+        <CursorPos X="15" Y="436"/>
+        <UsageCount Value="13"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="C:\lazarus\components\ideintf\componenttreeview.pas"/>
+        <UnitName Value="ComponentTreeView"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="242"/>
+        <CursorPos X="7" Y="250"/>
+        <UsageCount Value="14"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\objpas\classes\compon.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="237"/>
+        <CursorPos X="3" Y="240"/>
+        <UsageCount Value="9"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="C:\lazarus\lcl\include\treeview.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="705"/>
+        <CursorPos Y="724"/>
+        <UsageCount Value="14"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="C:\lazarus\lcl\include\customform.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1050"/>
+        <CursorPos X="54" Y="1068"/>
+        <UsageCount Value="13"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="C:\lazarus\lcl\include\wincontrol.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="3908"/>
+        <CursorPos Y="3930"/>
+        <UsageCount Value="13"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="C:\lazarus\components\ideintf\propeditutils.pp"/>
+        <UnitName Value="PropEditUtils"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="90"/>
+        <CursorPos X="35" Y="93"/>
+        <UsageCount Value="13"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="C:\lazarus\fpc\3.2.0\source\rtl\objpas\classes\persist.inc"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="3" Y="49"/>
+        <UsageCount Value="13"/>
+      </Unit14>
+    </Units>
+    <JumpHistory Count="5" HistoryIndex="4">
+      <Position1>
+        <Filename Value="..\Common\fmobjecttree.pas"/>
+        <Caret Line="187" Column="43" TopLine="171"/>
+      </Position1>
+      <Position2>
+        <Filename Value="..\Common\fmobjecttree.pas"/>
+        <Caret Line="30"/>
+      </Position2>
+      <Position3>
+        <Filename Value="..\Common\fmobjecttree.pas"/>
+        <Caret Line="187" Column="56" TopLine="170"/>
+      </Position3>
+      <Position4>
+        <Filename Value="..\Common\fmobjecttree.pas"/>
+        <Caret Line="86" TopLine="70"/>
+      </Position4>
+      <Position5>
+        <Filename Value="..\Common\fmobjecttree.pas"/>
+        <Caret Line="187" Column="51" TopLine="171"/>
+      </Position5>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode=""/>
+    </RunParams>
+  </ProjectSession>
+  <Debugging>
+    <BreakPoints Count="1">
+      <Item1>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="..\Common\fmcomponenttree.pas"/>
+        <Line Value="36"/>
+      </Item1>
+    </BreakPoints>
+  </Debugging>
+</CONFIG>

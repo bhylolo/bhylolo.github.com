@@ -1,0 +1,10 @@
+D:\git\bhylolo.github.com\Code\iOutlook\iOutlook\bin\Debug\iOutlook.exe.config
+D:\git\bhylolo.github.com\Code\iOutlook\iOutlook\bin\Debug\iOutlook.exe
+D:\git\bhylolo.github.com\Code\iOutlook\iOutlook\bin\Debug\iOutlook.pdb
+D:\git\bhylolo.github.com\Code\iOutlook\iOutlook\obj\Debug\iOutlook.csprojAssemblyReference.cache
+D:\git\bhylolo.github.com\Code\iOutlook\iOutlook\obj\Debug\iOutlook.FormMain.resources
+D:\git\bhylolo.github.com\Code\iOutlook\iOutlook\obj\Debug\iOutlook.Properties.Resources.resources
+D:\git\bhylolo.github.com\Code\iOutlook\iOutlook\obj\Debug\iOutlook.csproj.GenerateResource.cache
+D:\git\bhylolo.github.com\Code\iOutlook\iOutlook\obj\Debug\iOutlook.csproj.CoreCompileInputs.cache
+D:\git\bhylolo.github.com\Code\iOutlook\iOutlook\obj\Debug\iOutlook.exe
+D:\git\bhylolo.github.com\Code\iOutlook\iOutlook\obj\Debug\iOutlook.pdb
